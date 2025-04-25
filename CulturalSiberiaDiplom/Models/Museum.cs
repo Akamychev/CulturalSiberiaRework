@@ -13,6 +13,8 @@ public partial class Museum
 
     public DateOnly? DateOfFoundation { get; set; }
 
+    public int TypeId { get; set; }
+
     public string? Architects { get; set; }
 
     public TimeOnly StartWorkingTime { get; set; }
@@ -26,6 +28,8 @@ public partial class Museum
     public virtual Medium? ImageMedia { get; set; }
 
     public virtual Museumstatus Status { get; set; } = null!;
+
+    public virtual Museumtype Type { get; set; } = null!;
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 

@@ -5,8 +5,354 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views"
         mc:Ignorable="d"
-        Title="UserMainWindow" Height="450" Width="800">
+        Title="Главное меню"
+        Height="600" Width="800"
+        Background="#202020">
+    <Window.Resources>
+        <!-- Существующие стили -->
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+        <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="TurquoiseBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="LightBlackBrush" Color="#4F4F4F"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style x:Key="placeHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Grid>
+                            <TextBox Text="{Binding Path=Text,
+                                                RelativeSource={RelativeSource TemplatedParent},
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"
+                                     x:Name="textSource"
+                                     Background="Transparent"
+                                     Panel.ZIndex="2" />
+                            <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="Foreground" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
+                                                <Setter Property="Foreground" Value="LightGray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="PasswordBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для TabItem -->
+        <Style TargetType="TabItem">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="16" Foreground="{StaticResource TurquoiseBrush}"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" BorderThickness="0,0,0,2" BorderBrush="Transparent">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource TurquoiseBrush}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <!-- Верхняя панель с табами и пользователем -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Табы -->
+            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+        </Grid.RowDefinitions>
+
+        <!-- Табы -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
+            <TabControl Name="MainTabControl" Background="#202020">
+                <TabItem Header="Ближайшие мероприятия">
+                    <Grid Background="#202020" Margin="0,10,0,0">
+                        <!-- Верхняя панель с поиском -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Поиск -->
+                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Поиск -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                                     Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,10,0"/>
+                        </StackPanel>
+
+                        <!-- Основное содержимое -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
+                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Список событий -->
+                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
+                                <ListBox ItemsSource="{Binding UpcomingEvents}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" Margin="10">
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+
+                            <!-- Фильтры -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10">
+                                <!-- Стоимость -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource placeHolder}" Tag="Цена от" Width="80"
+                                             Text="{Binding MinPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="2" Style="{StaticResource placeHolder}" Tag="Цена до" Width="80"
+                                             Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <!-- Дата -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DatePicker Grid.Column="0" SelectedDate="{Binding StartDate}" Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <DatePicker Grid.Column="2" SelectedDate="{Binding EndDate}" Margin="5,0,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Все мероприятия -->
+                <TabItem Header="Все мероприятия">
+                    <Grid Background="#202020">
+                        <!-- Верхняя панель с поиском -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Поиск -->
+                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Поиск -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                                     Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,10,0"/>
+                        </StackPanel>
+
+                        <!-- Основное содержимое -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
+                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Список событий -->
+                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
+                                <ListBox ItemsSource="{Binding Events}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" Margin="10">
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+
+                            <!-- Фильтры -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10">
+                                <!-- Стоимость -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource placeHolder}" Tag="Цена от" Width="80"
+                                             Text="{Binding MinPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="2" Style="{StaticResource placeHolder}" Tag="Цена до" Width="80"
+                                             Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <!-- Дата -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DatePicker Grid.Column="0" SelectedDate="{Binding StartDate}" Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <DatePicker Grid.Column="2" SelectedDate="{Binding EndDate}" Margin="5,0,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Музеи -->
+                <TabItem Header="Музеи">
+                    <Grid Background="#202020">
+                        <!-- Верхняя панель с поиском -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Поиск -->
+                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Поиск -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                                     Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,10,0"/>
+                        </StackPanel>
+
+                        <!-- Основное содержимое -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
+                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Список событий -->
+                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
+                                <ListBox ItemsSource="{Binding Museums}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" Margin="10">
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="{Binding StartWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                <TextBlock Text="{Binding EndWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+
+                            <!-- Фильтры -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10">
+                                <!-- Стоимость -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource placeHolder}" Tag="Цена от" Width="80"
+                                             Text="{Binding MinPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="2" Style="{StaticResource placeHolder}" Tag="Цена до" Width="80"
+                                             Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <!-- Дата -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DatePicker Grid.Column="0" SelectedDate="{Binding StartDate}" Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <DatePicker Grid.Column="2" SelectedDate="{Binding EndDate}" Margin="5,0,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            <!-- Пользователь -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                <Ellipse Width="30" Height="30" Fill="Gray" Margin="0,0,5,0"/>
+                <TextBlock Text="Иванов И.И." FontSize="16"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

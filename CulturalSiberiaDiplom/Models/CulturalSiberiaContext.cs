@@ -33,6 +33,8 @@ public partial class CulturalSiberiaContext : DbContext
 
     public virtual DbSet<Museumstatus> Museumstatuses { get; set; }
 
+    public virtual DbSet<Museumtype> Museumtypes { get; set; }
+
     public virtual DbSet<Notification> Notifications { get; set; }
 
     public virtual DbSet<Originalitystatus> Originalitystatuses { get; set; }
@@ -222,6 +224,7 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.StartWorkingTime).HasColumnName("start_working_time");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.TypeId).HasColumnName("type_id");
 
             entity.HasOne(d => d.ImageMedia).WithMany(p => p.Museums)
                 .HasForeignKey(d => d.ImageMediaId)
@@ -231,6 +234,11 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("museum_status_id_fkey");
+
+            entity.HasOne(d => d.Type).WithMany(p => p.Museums)
+                .HasForeignKey(d => d.TypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("museum_type_id_fkey");
 
             entity.HasMany(d => d.MuseumExhibits).WithMany(p => p.Museums)
                 .UsingEntity<Dictionary<string, object>>(
@@ -298,6 +306,18 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.StatusName)
                 .HasMaxLength(255)
                 .HasColumnName("status_name");
+        });
+
+        modelBuilder.Entity<Museumtype>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("museumtypes_pkey");
+
+            entity.ToTable("museumtypes", "Part1");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TypeName)
+                .HasMaxLength(255)
+                .HasColumnName("type_name");
         });
 
         modelBuilder.Entity<Notification>(entity =>

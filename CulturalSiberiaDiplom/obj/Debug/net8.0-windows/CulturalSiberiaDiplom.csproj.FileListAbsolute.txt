@@ -157,3 +157,4 @@ C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Deb
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\WorkerMainWindow.baml
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\CulturalSiberiaDiplom.sourcelink.json
