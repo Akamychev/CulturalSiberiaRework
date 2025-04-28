@@ -1,11 +1,12 @@
-﻿<Window x:Class="CulturalSiberiaDiplom.Views.WorkerMainWindow"
+﻿<Window x:Class="CulturalSiberiaDiplom.Views.UserWorkerMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views"
         mc:Ignorable="d"
-        Title="WorkerMainWindow" Height="450" Width="800"
+        Title="Главное меню"
+        Height="600" Width="800"
         Background="#202020">
     <Window.Resources>
         <!-- Существующие стили -->
@@ -113,6 +114,83 @@
         <!-- Табы -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
             <TabControl Name="MainTabControl" Background="#202020">
+                <TabItem Header="Ближайшие мероприятия">
+                    <Grid Background="#202020" Margin="0,10,0,0">
+                        <!-- Верхняя панель с поиском -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Поиск -->
+                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Поиск -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                                     Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,10,0"/>
+                        </StackPanel>
+
+                        <!-- Основное содержимое -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
+                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Список событий -->
+                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
+                                <ListBox ItemsSource="{Binding UpcomingEvents}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" Margin="10">
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+
+                            <!-- Фильтры -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10">
+                                <!-- Стоимость -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource placeHolder}" Tag="Цена от" Width="80"
+                                             Text="{Binding MinPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="2" Style="{StaticResource placeHolder}" Tag="Цена до" Width="80"
+                                             Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <!-- Дата -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DatePicker Grid.Column="0" SelectedDate="{Binding StartDate}" Margin="0,0,5,0"/>
+                                    <Line Grid.Column="1" X1="0" Y1="20" X2="0" Y2="0" Stroke="LightGray" StrokeThickness="1" VerticalAlignment="Center"/>
+                                    <DatePicker Grid.Column="2" SelectedDate="{Binding EndDate}" Margin="5,0,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
                 <!-- Все мероприятия -->
                 <TabItem Header="Все мероприятия">
                     <Grid Background="#202020">
@@ -268,71 +346,13 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-                
-                <TabItem Header="Инструментарий">
-                    <Grid Background="#202020">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" MinWidth="400"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            
-                            <!-- Мероприятия -->
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Мероприятия" HorizontalAlignment="Center" VerticalAlignment="Top"
-                                       FontSize="17"/>
-                            <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0, 0, 0,0">
-                                <Button Content="Добавить" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Редактировать" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Удалить" Margin="10" Width="150" Height="35"/>
-                                <ListBox Grid.Column="1" x:Name="EventTypeListBox" HorizontalAlignment="Right"
-                                         VerticalAlignment="Top" Width="200" Height="100"/>
-                            </StackPanel>
-                            
-                            <!-- Музеи -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Музеи" HorizontalAlignment="Center" VerticalAlignment="Top"
-                                       FontSize="17"/>
-                            <StackPanel Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0, 0, 0,0">
-                                <Button Content="Добавить" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Редактировать" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Удалить" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Общий отчет" Margin="10" Width="150" Height="35"/>
-                            </StackPanel>
-                            
-                            <!-- Экспонаты -->
-                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Музейные экспонаты" HorizontalAlignment="Center" VerticalAlignment="Top"
-                                       FontSize="17"/>
-                            <StackPanel Grid.Column="0" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0, 0, 0,0">
-                                <Button Content="Добавить" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Редактировать" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Удалить" Margin="10" Width="150" Height="35"/>
-                                <Button Content="Общий отчет" Margin="10" Width="150" Height="35"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </TabItem>
             </TabControl>
-            
+
+            <!-- Пользователь -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                <Ellipse Width="30" Height="30" Fill="Gray" Margin="0,0,5,0"/>
+                <TextBlock Text="Иванов И.И." FontSize="16"/>
+            </StackPanel>
         </StackPanel>
-        
-        <!-- Пользователь -->
-        <StackPanel Grid.Row="0"  Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-            <Ellipse Width="30" Height="30" Fill="Gray" Margin="0,0,5,0"/>
-            <TextBlock Text="Иванов И.И." FontSize="16"/>
-        </StackPanel>
-        
     </Grid>
 </Window>

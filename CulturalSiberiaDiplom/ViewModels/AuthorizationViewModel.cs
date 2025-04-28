@@ -100,11 +100,9 @@ public class AuthorizationViewModel : NotifyProperty
             case "Admin":
                 NavigateTo(new AdminMainWindow());
                 break;
-            case "Worker":
-                NavigateTo(new WorkerMainWindow());
-                break;
             case "User":
-                NavigateTo(new UserMainWindow());
+            case "Worker":
+                NavigateTo(new UserWorkerMainWindow());
                 break;
             
             default:

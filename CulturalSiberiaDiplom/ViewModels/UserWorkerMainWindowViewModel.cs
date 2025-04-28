@@ -8,7 +8,7 @@ using CulturalSiberiaDiplom.Services;
 
 namespace CulturalSiberiaDiplom.ViewModels;
 
-public class UserMainWindowViewModel : NotifyProperty
+public class UserWorkerMainWindowViewModel : NotifyProperty
 {
     private ObservableCollection<Museum> _allMuseums = new();
     private ObservableCollection<Event> _allEvents = new();
@@ -169,7 +169,7 @@ public class UserMainWindowViewModel : NotifyProperty
         }
     }
     
-    public UserMainWindowViewModel()
+    public UserWorkerMainWindowViewModel()
     {
         LoadData();
     }

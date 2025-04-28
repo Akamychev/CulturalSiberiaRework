@@ -3,11 +3,11 @@ using CulturalSiberiaDiplom.ViewModels;
 
 namespace CulturalSiberiaDiplom.Views;
 
-public partial class WorkerMainWindow : Window
+public partial class UserWorkerMainWindow : Window
 {
-    public WorkerMainWindow()
+    public UserWorkerMainWindow()
     {
         InitializeComponent();
-        DataContext = new WorkerMainWindowViewModel();
+        DataContext = new UserWorkerMainWindowViewModel();
     }
 }
