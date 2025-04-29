@@ -94,6 +94,7 @@ public class AuthorizationViewModel : NotifyProperty
     private void OpenMainWindow(User user)
     {
         CurrentUser.SelectedUser = user;
+        Console.WriteLine($"Current role: {CurrentUser.SelectedUser.Position.PositionName}");
 
         switch (user.Position.PositionName)
         {

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views"
+        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Services"
         mc:Ignorable="d"
         Title="Главное меню"
         Height="600" Width="800"
@@ -102,6 +102,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <local:RoleToVisibilityConverter x:Key="RoleToVisibilityConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -114,7 +115,9 @@
         <!-- Табы -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
             <TabControl Name="MainTabControl" Background="#202020">
-                <TabItem Header="Ближайшие мероприятия">
+                <TabItem Header="Ближайшие мероприятия" Visibility="{Binding CurrentUser.Position.PositionName,
+                                    Converter={StaticResource RoleToVisibilityConverter},
+                                    ConverterParameter=User}">
                     <Grid Background="#202020" Margin="0,10,0,0">
                         <!-- Верхняя панель с поиском -->
                         <Grid.RowDefinitions>
@@ -205,6 +208,16 @@
                             <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
                                      Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="0,0,10,0"/>
+                            <Button Content="Добавить мероприятие" Width="150" Height="35"
+                                    Command="{Binding AddNewEventCommand}" 
+                                    Visibility="{Binding CurrentUser.Position.PositionName,
+                                    Converter={StaticResource RoleToVisibilityConverter},
+                                    ConverterParameter=Worker}"/>
+                            <Button Content="Отчет по мероприятиям" Width="150" Height="35"
+                                    Command="{Binding AllEventsReportPDF}"
+                                    Visibility="{Binding CurrentUser.Position.PositionName,
+                                    Converter={StaticResource RoleToVisibilityConverter},
+                                    ConverterParameter=Worker}" Margin="15, 0, 0, 0"/>
                         </StackPanel>
 
                         <!-- Основное содержимое -->
@@ -283,6 +296,16 @@
                             <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
                                      Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="0,0,10,0"/>
+                            <Button Content="Добавить музей" Width="150" Height="35"
+                                    Command="{Binding AddNewMuseumCommand}" 
+                                    Visibility="{Binding CurrentUser.Position.PositionName,
+                                    Converter={StaticResource RoleToVisibilityConverter},
+                                    ConverterParameter=Worker}"/>
+                            <Button Content="Отчет по музеям" Width="150" Height="35"
+                                    Command="{Binding AllMuseumsReportPDF}"
+                                    Visibility="{Binding CurrentUser.Position.PositionName,
+                                    Converter={StaticResource RoleToVisibilityConverter},
+                                    ConverterParameter=Worker}" Margin="15, 0, 0, 0"/>
                         </StackPanel>
 
                         <!-- Основное содержимое -->

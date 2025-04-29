@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
+using CulturalSiberiaDiplom.Views.WorkerOperationsWithEvents;
+using CulturalSiberiaDiplom.Views.WorkerOperationsWithMuseums;
+using Microsoft.EntityFrameworkCore;
 
 namespace CulturalSiberiaDiplom.ViewModels;
 
@@ -168,10 +174,33 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             PerformSearch();
         }
     }
+
+    private readonly User _currentUser;
+    public User CurrentUser => _currentUser;
     
-    public UserWorkerMainWindowViewModel()
+    public ICommand AddNewEventCommand { get; set; }
+    public ICommand AddNewMuseumCommand { get; set; }
+    
+    public ICommand AllEventsReportPDF { get; set; }
+    public ICommand AllMuseumsReportPDF { get; set; }
+    
+    public UserWorkerMainWindowViewModel(User user)
     {
+        _currentUser = user;
         LoadData();
+        
+        AddNewEventCommand = new RelayCommand(() =>
+        {
+            var addNewEventWindow = new AddNewEventWindow();
+            addNewEventWindow.ShowDialog();
+        });
+        AddNewMuseumCommand = new RelayCommand(() =>
+        {
+            var addNewMuseumWindow = new AddNewMuseumWindow();
+            addNewMuseumWindow.ShowDialog();
+        });
+        AllEventsReportPDF = new RelayCommand(async () => await AllEventsReportAsync());
+        AllMuseumsReportPDF = new RelayCommand(async () => await AllMuseumsReportAsync());
     }
 
     private void LoadData()
@@ -222,5 +251,30 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             FoundationDateFrom,
             FoundationDateTo);
         Museums = new ObservableCollection<Museum>(filteredMuseums);
+    }
+
+    private async Task AllEventsReportAsync()
+    {
+        var savePath = Reports.GetSaveFilePath(".pdf", "PDF файл (*.pdf)|*.pdf");
+        
+        if (string.IsNullOrWhiteSpace(savePath))
+            return;
+        
+        var events = Service.GetDbContext().Events
+            .Include(e => e.Type).ToList();
+        await Reports.GenerateAllEventsPdfReportAsync(events, savePath);
+    }
+
+    private async Task AllMuseumsReportAsync()
+    {
+        var savePath = Reports.GetSaveFilePath(".pdf", "PDF файл (*.pdf)|*.pdf");
+        
+        if (string.IsNullOrWhiteSpace(savePath))
+            return;
+        
+        var museums = Service.GetDbContext().Museums
+            .Include(m => m.Type).ToList();
+        
+        await Reports.GenerateAllMuseumsPdfReportAsync(museums, savePath);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using CulturalSiberiaDiplom.Services;
 using CulturalSiberiaDiplom.ViewModels;
 
 namespace CulturalSiberiaDiplom.Views;
@@ -8,6 +9,6 @@ public partial class UserWorkerMainWindow : Window
     public UserWorkerMainWindow()
     {
         InitializeComponent();
-        DataContext = new UserWorkerMainWindowViewModel();
+        DataContext = new UserWorkerMainWindowViewModel(CurrentUser.SelectedUser);
     }
 }
