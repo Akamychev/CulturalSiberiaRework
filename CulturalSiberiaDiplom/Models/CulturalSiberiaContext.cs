@@ -21,15 +21,15 @@ public partial class CulturalSiberiaContext : DbContext
 
     public virtual DbSet<Eventstype> Eventstypes { get; set; }
 
+    public virtual DbSet<Exhibit> Exhibits { get; set; }
+
     public virtual DbSet<Exhibitstatus> Exhibitstatuses { get; set; }
 
     public virtual DbSet<Languagestype> Languagestypes { get; set; }
 
-    public virtual DbSet<Medium> Media { get; set; }
+    public virtual DbSet<Mediafile> Mediafiles { get; set; }
 
     public virtual DbSet<Museum> Museums { get; set; }
-
-    public virtual DbSet<Museumexhibit> Museumexhibits { get; set; }
 
     public virtual DbSet<Museumstatus> Museumstatuses { get; set; }
 
@@ -46,6 +46,8 @@ public partial class CulturalSiberiaContext : DbContext
     public virtual DbSet<Ticket> Tickets { get; set; }
 
     public virtual DbSet<Ticketsstatus> Ticketsstatuses { get; set; }
+
+    public virtual DbSet<Tickettargettype> Tickettargettypes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -160,6 +162,43 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasColumnName("type_name");
         });
 
+        modelBuilder.Entity<Exhibit>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("exhibit_pkey");
+
+            entity.ToTable("exhibit", "Part1");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.ImageMediaId).HasColumnName("image_media_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.OriginalityStatusId).HasColumnName("originality_status_id");
+            entity.Property(e => e.Price)
+                .HasColumnType("money")
+                .HasColumnName("price");
+            entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.TimestampOfReceipt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("timestamp_of_receipt");
+
+            entity.HasOne(d => d.ImageMedia).WithMany(p => p.Exhibits)
+                .HasForeignKey(d => d.ImageMediaId)
+                .HasConstraintName("exhibit_image_media_id_fkey");
+
+            entity.HasOne(d => d.OriginalityStatus).WithMany(p => p.Exhibits)
+                .HasForeignKey(d => d.OriginalityStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("exhibit_originality_status_id_fkey");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Exhibits)
+                .HasForeignKey(d => d.StatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("exhibit_status_id_fkey");
+        });
+
         modelBuilder.Entity<Exhibitstatus>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("exhibitstatus_pkey");
@@ -184,13 +223,16 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasColumnName("languages_name");
         });
 
-        modelBuilder.Entity<Medium>(entity =>
+        modelBuilder.Entity<Mediafile>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("media_pkey");
+            entity.HasKey(e => e.Id).HasName("mediafiles_pkey");
 
-            entity.ToTable("media", "Part1");
+            entity.ToTable("mediafiles", "Part1");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ContentType)
+                .HasMaxLength(255)
+                .HasColumnName("content_type");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
@@ -198,9 +240,10 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.EntityTable)
                 .HasMaxLength(255)
                 .HasColumnName("entity_table");
-            entity.Property(e => e.FileUrl)
+            entity.Property(e => e.FileData).HasColumnName("file_data");
+            entity.Property(e => e.FileName)
                 .HasMaxLength(255)
-                .HasColumnName("file_url");
+                .HasColumnName("file_name");
         });
 
         modelBuilder.Entity<Museum>(entity =>
@@ -214,6 +257,7 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("architects");
             entity.Property(e => e.DateOfFoundation).HasColumnName("date_of_foundation");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.EndWorkingTime).HasColumnName("end_working_time");
             entity.Property(e => e.ImageMediaId).HasColumnName("image_media_id");
             entity.Property(e => e.Location)
@@ -222,6 +266,9 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
+            entity.Property(e => e.Price)
+                .HasColumnType("money")
+                .HasColumnName("price");
             entity.Property(e => e.StartWorkingTime).HasColumnName("start_working_time");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
@@ -242,8 +289,8 @@ public partial class CulturalSiberiaContext : DbContext
 
             entity.HasMany(d => d.MuseumExhibits).WithMany(p => p.Museums)
                 .UsingEntity<Dictionary<string, object>>(
-                    "MuseumExhibit1",
-                    r => r.HasOne<Museumexhibit>().WithMany()
+                    "MuseumExhibit",
+                    r => r.HasOne<Exhibit>().WithMany()
                         .HasForeignKey("MuseumExhibitId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("museum_exhibits_museum_exhibit_id_fkey"),
@@ -258,42 +305,6 @@ public partial class CulturalSiberiaContext : DbContext
                         j.IndexerProperty<int>("MuseumId").HasColumnName("museum_id");
                         j.IndexerProperty<int>("MuseumExhibitId").HasColumnName("museum_exhibit_id");
                     });
-        });
-
-        modelBuilder.Entity<Museumexhibit>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("museumexhibit_pkey");
-
-            entity.ToTable("museumexhibit", "Part1");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.ImageMediaId).HasColumnName("image_media_id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
-            entity.Property(e => e.OriginalityStatusId).HasColumnName("originality_status_id");
-            entity.Property(e => e.Price)
-                .HasColumnType("money")
-                .HasColumnName("price");
-            entity.Property(e => e.StatusId).HasColumnName("status_id");
-            entity.Property(e => e.TimestampOfReceipt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("timestamp_of_receipt");
-
-            entity.HasOne(d => d.ImageMedia).WithMany(p => p.Museumexhibits)
-                .HasForeignKey(d => d.ImageMediaId)
-                .HasConstraintName("museumexhibit_image_media_id_fkey");
-
-            entity.HasOne(d => d.OriginalityStatus).WithMany(p => p.Museumexhibits)
-                .HasForeignKey(d => d.OriginalityStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("museumexhibit_originality_status_id_fkey");
-
-            entity.HasOne(d => d.Status).WithMany(p => p.Museumexhibits)
-                .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("museumexhibit_status_id_fkey");
         });
 
         modelBuilder.Entity<Museumstatus>(entity =>
@@ -399,22 +410,23 @@ public partial class CulturalSiberiaContext : DbContext
             entity.ToTable("tickets", "Part1");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.EventId).HasColumnName("event_id");
             entity.Property(e => e.PurchaseDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("purchase_date");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.TicketTargetId).HasColumnName("ticket_target_id");
+            entity.Property(e => e.TicketTargetTypeId).HasColumnName("ticket_target_type_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.Event).WithMany(p => p.Tickets)
-                .HasForeignKey(d => d.EventId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("tickets_event_id_fkey");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("tickets_status_id_fkey");
+
+            entity.HasOne(d => d.TicketTargetType).WithMany(p => p.Tickets)
+                .HasForeignKey(d => d.TicketTargetTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("tickets_ticket_target_type_id_fkey");
 
             entity.HasOne(d => d.User).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.UserId)
@@ -432,6 +444,20 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.StatusName)
                 .HasMaxLength(255)
                 .HasColumnName("status_name");
+        });
+
+        modelBuilder.Entity<Tickettargettype>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("tickettargettype_pkey");
+
+            entity.ToTable("tickettargettype", "Part1");
+
+            entity.HasIndex(e => e.TypeName, "tickettargettype_type_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TypeName)
+                .HasMaxLength(50)
+                .HasColumnName("type_name");
         });
 
         modelBuilder.Entity<User>(entity =>

@@ -7,7 +7,9 @@ public partial class Ticket
 {
     public int Id { get; set; }
 
-    public int EventId { get; set; }
+    public int TicketTargetTypeId { get; set; }
+
+    public int TicketTargetId { get; set; }
 
     public int UserId { get; set; }
 
@@ -15,9 +17,9 @@ public partial class Ticket
 
     public int StatusId { get; set; }
 
-    public virtual Event Event { get; set; } = null!;
-
     public virtual Ticketsstatus Status { get; set; } = null!;
+
+    public virtual Tickettargettype TicketTargetType { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

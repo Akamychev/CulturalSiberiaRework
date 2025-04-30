@@ -11,7 +11,11 @@ public partial class Museum
 
     public string Location { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public DateOnly? DateOfFoundation { get; set; }
+
+    public decimal? Price { get; set; }
 
     public int TypeId { get; set; }
 
@@ -25,7 +29,7 @@ public partial class Museum
 
     public int? ImageMediaId { get; set; }
 
-    public virtual Medium? ImageMedia { get; set; }
+    public virtual Mediafile? ImageMedia { get; set; }
 
     public virtual Museumstatus Status { get; set; } = null!;
 
@@ -33,5 +37,5 @@ public partial class Museum
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual ICollection<Museumexhibit> MuseumExhibits { get; set; } = new List<Museumexhibit>();
+    public virtual ICollection<Exhibit> MuseumExhibits { get; set; } = new List<Exhibit>();
 }

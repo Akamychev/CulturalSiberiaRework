@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CulturalSiberiaDiplom.Models;
 
-public partial class Museumexhibit
+public partial class Exhibit
 {
     public int Id { get; set; }
 
@@ -13,6 +13,8 @@ public partial class Museumexhibit
 
     public decimal? Price { get; set; }
 
+    public string? Description { get; set; }
+
     public int StatusId { get; set; }
 
     public int OriginalityStatusId { get; set; }
@@ -21,7 +23,7 @@ public partial class Museumexhibit
 
     public DateTime TimestampOfReceipt { get; set; }
 
-    public virtual Medium? ImageMedia { get; set; }
+    public virtual Mediafile? ImageMedia { get; set; }
 
     public virtual Originalitystatus OriginalityStatus { get; set; } = null!;
 

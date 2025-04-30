@@ -29,11 +29,9 @@ public partial class Event
 
     public virtual User CreatedByNavigation { get; set; } = null!;
 
-    public virtual Medium? ImageMedia { get; set; }
+    public virtual Mediafile? ImageMedia { get; set; }
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-
-    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
     public virtual Eventstype Type { get; set; } = null!;
 

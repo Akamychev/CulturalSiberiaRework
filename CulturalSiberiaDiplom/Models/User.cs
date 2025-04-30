@@ -35,7 +35,7 @@ public partial class User
 
     public virtual ICollection<Auditlog> Auditlogs { get; set; } = new List<Auditlog>();
 
-    public virtual Medium? AvatarMedia { get; set; }
+    public virtual Mediafile? AvatarMedia { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 

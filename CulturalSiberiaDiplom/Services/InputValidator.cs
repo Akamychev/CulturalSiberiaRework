@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using CulturalSiberiaDiplom.Models;
 
 namespace CulturalSiberiaDiplom.Services;
 
@@ -136,5 +137,73 @@ public static class InputValidator
         }
 
         return true;
+    }
+
+    public static bool ValidateNewEvent(string title, string? location, decimal? price, int? capacity)
+    {
+        if (!ValidateLocation(location)) return false;
+        if (!ValidatePrice(price)) return false;
+        if (!ValidateCapacity(capacity)) return false;
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            MessageBox.Show("Все обязательные поля должны быть заполнены",
+                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9,]+$"))
+        {
+            MessageBox.Show("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов",
+                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+        
+        return true;
+    }
+
+    private static bool ValidateLocation(string? location)
+    {
+        if (string.IsNullOrWhiteSpace(location)) return true;
+
+        if (!Regex.IsMatch(location, @"^[А-Яа-яA-Za-zёЁ0-9,/]+$"))
+        {
+            MessageBox.Show(
+                "Местоположение не должно содержать ничего кроме букв, цифр, знаков ',' и '/', а также пробелов",
+                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool ValidatePrice(decimal? price)
+    {
+        switch (price)
+        {
+            case null:
+                return true;
+            case < 0:
+                MessageBox.Show("Стоимость не может быть отрицательной",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    private static bool ValidateCapacity(int? capacity)
+    {
+        switch (capacity)
+        {
+            case null:
+                return true;
+            case <= 0:
+                MessageBox.Show("Вместимость не может быть меньше, либо равной 0",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            default:
+                return true;
+        }
     }
 }

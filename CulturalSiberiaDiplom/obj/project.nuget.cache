@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kuxE0/S6yFxepaQ/TTSCP/a7gdjQCkf0FtM+2ylGlYq5NLRW5pd+tjeKDl+p7XVOAcTpvPnJjjzEOIxAH69d7A==",
+  "dgSpecHash": "OtTyylT2u1pSE1WbheoGCrqYIdNO76UrPelL31PAbIOmKOuWBJTaCjqOjpJOccuGrWesnuDolMt/L1AhzgSvWQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Akame\\RiderProjects\\CulturalSiberiaDiplom\\CulturalSiberiaDiplom\\CulturalSiberiaDiplom.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\Akame\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\Akame\\.nuget\\packages\\bouncycastle.cryptography\\2.4.0\\bouncycastle.cryptography.2.4.0.nupkg.sha512",
     "C:\\Users\\Akame\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "C:\\Users\\Akame\\.nuget\\packages\\extended.wpf.toolkit\\4.7.25104.5739\\extended.wpf.toolkit.4.7.25104.5739.nupkg.sha512",
     "C:\\Users\\Akame\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Akame\\.nuget\\packages\\itext\\9.1.0\\itext.9.1.0.nupkg.sha512",
     "C:\\Users\\Akame\\.nuget\\packages\\itext.bouncy-castle-adapter\\9.1.0\\itext.bouncy-castle-adapter.9.1.0.nupkg.sha512",

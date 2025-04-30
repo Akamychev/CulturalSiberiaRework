@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CulturalSiberiaDiplom.Models;
 
-public partial class Medium
+public partial class Mediafile
 {
     public int Id { get; set; }
 
@@ -11,13 +11,17 @@ public partial class Medium
 
     public int EntityId { get; set; }
 
-    public string FileUrl { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+
+    public string ContentType { get; set; } = null!;
+
+    public byte[] FileData { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual ICollection<Museumexhibit> Museumexhibits { get; set; } = new List<Museumexhibit>();
+    public virtual ICollection<Exhibit> Exhibits { get; set; } = new List<Exhibit>();
 
     public virtual ICollection<Museum> Museums { get; set; } = new List<Museum>();
 

@@ -42,6 +42,10 @@
               "target": "Package",
               "version": "[8.2.2, )"
             },
+            "Extended.Wpf.Toolkit": {
+              "target": "Package",
+              "version": "[4.7.25104.5739, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.4, )"

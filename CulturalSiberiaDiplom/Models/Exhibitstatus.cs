@@ -9,5 +9,5 @@ public partial class Exhibitstatus
 
     public string StatusName { get; set; } = null!;
 
-    public virtual ICollection<Museumexhibit> Museumexhibits { get; set; } = new List<Museumexhibit>();
+    public virtual ICollection<Exhibit> Exhibits { get; set; } = new List<Exhibit>();
 }

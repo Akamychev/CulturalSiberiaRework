@@ -2,11 +2,119 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views.WorkerOperationsWithEvents"
         mc:Ignorable="d"
-        Title="AddNewEvent" Height="450" Width="800">
+        Title="Добавление нового мероприятия"
+        Height="650" Width="750"
+        MinHeight="650" MinWidth="750"
+        MaxHeight="650" MaxWidth="750"
+        Background="#202020">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+        <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="TurquoiseBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="LightBlackBrush" Color="#4F4F4F"/>
+        
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
+        <TextBlock Text="* - Отмечены обязательные поля для заполнения" HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" FontSize="14" TextAlignment="Left" FontWeight="Bold" Margin="5"/>
+        
+        <TextBlock Text="Добавление мероприятия" Margin="0, 30, 0, 10" FontSize="25" Width="300" Height="33" 
+                   TextAlignment="Center" VerticalAlignment="Top"/>
+        
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 0, 0, 150">
+            
+            <TextBlock Text="Название:*" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>        
+            <TextBox Name="TitleBox" Margin="100, 10, 0, 0" Width="250" Height="25" 
+                     Text="{Binding TitleProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Тип:*" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <ComboBox Name="TypeBox" Margin="100, 10, 0, 0" Width="250" Height="25"
+                      ItemsSource="{Binding EventTypes}" SelectedValue="{Binding TypeId}"
+                      DisplayMemberPath="TypeName" SelectedValuePath="Id"/>
+            
+            <TextBlock Text="Цена за билет:" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <TextBox Name="PriceBox" Margin="100, 10, 0, 0" Width="250" Height="25" 
+                     Text="{Binding PriceProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Изображение:" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <Button Content="Выберите или перетащите изображение" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="250" Height="100" Margin="90, 0, 0, 0" AllowDrop="True" Drop="ImageButton_Drop"
+                    Command="{Binding ChoseImageCommand}"/>
+            
+            
+        </StackPanel>
+        
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 0, 215">
+            
+            <TextBlock Text="Дата начала:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <toolkit:DateTimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
+                     Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{StaticResource LightBlackBrush}"/>
+            
+            <TextBlock Text="Дата конца:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <toolkit:DateTimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
+                     Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{StaticResource LightBlackBrush}"/>
+            
+            <TextBlock Text="Место проведения:" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <TextBox Name="LocationBox" Margin="0, 10, 100, 0" Width="250" Height="25"
+                     Text="{Binding LocationProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Вместимость:" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <TextBox Name="CapacityBox" Margin="0, 10, 100, 0" Width="250" Height="25"
+                     Text="{Binding CapacityProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+        </StackPanel>
+        
+        <TextBlock Text="Описание:" FontSize="15" Width="250" Height="25" TextAlignment="Center"
+                   Margin="0, 0, 0, 175" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <TextBox Name="DescriptionBox" Margin="0, 0, 0, 90" Width="550" Height="80"
+                 HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                 Text="{Binding DescriptionProperty, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="{Binding DescriptionCharacterCount}" FontSize="15" Width="250" Height="25" TextAlignment="Center"
+                   Margin="0, 0, 30, 60" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        
+        <Button Content="Добавить" Width="150" Height="35" HorizontalAlignment="Center" Margin="30"
+                VerticalAlignment="Bottom" Command="{Binding AddNewEventCommand}"/>
         
     </Grid>
 </Window>
