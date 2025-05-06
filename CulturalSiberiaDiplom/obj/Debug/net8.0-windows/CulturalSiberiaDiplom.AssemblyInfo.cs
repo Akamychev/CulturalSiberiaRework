@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CulturalSiberiaDiplom")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c393b5cd7e8e916069a1f7d59f427134c3b9ee35")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2b9490997967ed4c3d359a45d4a82cd14a0b007")]
 [assembly: System.Reflection.AssemblyProductAttribute("CulturalSiberiaDiplom")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CulturalSiberiaDiplom")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -10,7 +10,7 @@ public partial class AddNewEventWindow : Window
     public AddNewEventWindow()
     {
         InitializeComponent();
-        DataContext = new AddNewEventViewModel();
+        DataContext = new AddNewEventViewModel(Service.GetDbContext());
     }
 
     private void ImageButton_Drop(object sender, DragEventArgs e)
@@ -26,8 +26,12 @@ public partial class AddNewEventWindow : Window
         if (ImageService.IsImageFile(path))
         {
             var data = File.ReadAllBytes(path);
-            var viewModel = DataContext as AddNewEventViewModel;
-            viewModel?.SetImage(data);
+            
+            if (DataContext is AddNewEventViewModel vm)
+            {
+                vm.ImageBytes = data;
+                vm.PreviewImage = ImageService.SetImage(data);
+            }
         }
         else
         {

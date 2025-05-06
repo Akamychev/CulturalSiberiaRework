@@ -147,8 +147,7 @@ public static class InputValidator
 
         if (string.IsNullOrWhiteSpace(title))
         {
-            MessageBox.Show("Все обязательные поля должны быть заполнены",
-                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageService.ShowError("Все обязательные поля должны быть заполнены");
             return false;
         }
 
@@ -159,6 +158,33 @@ public static class InputValidator
             return false;
         }
         
+        return true;
+    }
+
+    public static bool ValidateNewMuseum(string title, string location, decimal? price, string? architects)
+    {
+        if (!ValidateLocation(location)) return false;
+        if (!ValidatePrice(price)) return false;
+        if (!ValidateArchitects(architects)) return false;
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            MessageService.ShowError("Все обязательные поля должны быть заполнены");
+            return false;
+        }
+        
+        if (string.IsNullOrWhiteSpace(location))
+        {
+            MessageService.ShowError("Местоположение не может быть пустым");
+            return false;
+        }
+
+        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9,-]+$"))
+        {
+            MessageService.ShowError("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов");
+            return false;
+        }
+
         return true;
     }
 
@@ -205,5 +231,19 @@ public static class InputValidator
             default:
                 return true;
         }
+    }
+
+    private static bool ValidateArchitects(string? architects)
+    {
+        if (string.IsNullOrWhiteSpace(architects))
+            return true;
+
+        if (!Regex.IsMatch(architects, @"^[A-Za-zА-Яа-яёЁ,-]+$"))
+        {
+            MessageService.ShowError("Поле 'Архитекторы' не должно содержать ничего кроме букв, знаков ',' и '-', а также пробелов");
+            return false;
+        }
+
+        return true;
     }
 }

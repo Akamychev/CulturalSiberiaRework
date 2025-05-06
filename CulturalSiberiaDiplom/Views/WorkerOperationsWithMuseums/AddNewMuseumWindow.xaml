@@ -3,10 +3,213 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views.WorkerOperationsWithMuseums"
+        xmlns:services="clr-namespace:CulturalSiberiaDiplom.Services"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="AddNewMuseumWindow" Height="450" Width="800">
+        Title="Добавление нового музея" 
+        Height="650" Width="750"
+        MinHeight="650" MinWidth="750"
+        MaxHeight="650" MaxWidth="750"
+        Background="#202020">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+        <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="TurquoiseBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="LightBlackBrush" Color="#4F4F4F"/>
+        
+        <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="MainBorder"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}"/>
+                            <ContentPresenter x:Name="ContentSite"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              HorizontalAlignment="Left"
+                                              Margin="5, 0"
+                                              VerticalAlignment="Center"/>
+                            <ToggleButton x:Name="toggleButton"
+                                          Focusable="False"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"
+                                          Background="Transparent"
+                                          BorderBrush="Transparent"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,4,0"
+                                          Width="20"
+                                          Height="20">
+                                <Path x:Name="arrow"
+                                      Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                                      Fill="#AAAAAA"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                            </ToggleButton>
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Placement="Bottom"
+                                   PopupAnimation="Slide">
+                                <Border x:Name="dropDownBorder"
+                                        Background="{StaticResource LightBlackBrush}"
+                                        BorderBrush="{StaticResource LightBlackBrush}">
+                                    <ScrollViewer Margin="2">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="DefaultButtonStyle">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="ImageButtonStyle">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <ContentPresenter x:Name="TextContent"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,0,30">
+                                </ContentPresenter>
+                                <Image x:Name="ImageContent"
+                                       Source="{Binding DataContext.PreviewImage,
+                                       RelativeSource={RelativeSource AncestorType=Window}}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Stretch="UniformToFill"
+                                       Visibility="{Binding DataContext.PreviewImage,
+                                       RelativeSource={RelativeSource AncestorType=Window},
+                                       Converter={StaticResource NullToVisibilityConverter}}">
+                                </Image>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
+        <TextBlock Text="* - Отмечены обязательные поля для заполнения" HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" FontSize="14" TextAlignment="Left" FontWeight="Bold" Margin="5"/>
+        
+        <TextBlock Text="Добавление музея" Margin="0, 30, 0, 10" FontSize="25" Width="300" Height="33" 
+                   TextAlignment="Center" VerticalAlignment="Top"/>
+        
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 0, 0, 150">
+            
+            <TextBlock Text="Название:*" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>        
+            <TextBox Name="TitleBox" Margin="100, 10, 0, 0" Width="250" Height="25" 
+                     Text="{Binding TitleProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Тип:*" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <ComboBox Name="TypeBox" Margin="100, 10, 0, 0" Width="250" Height="25"
+                      ItemsSource="{Binding MuseumTypes}" SelectedValue="{Binding TypeId}"
+                      DisplayMemberPath="TypeName" SelectedValuePath="Id"
+                      Style="{StaticResource {x:Type ComboBox}}"/>
+            
+            <TextBlock Text="Цена за билет:" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <TextBox Name="PriceBox" Margin="100, 10, 0, 0" Width="250" Height="25" 
+                     Text="{Binding PriceProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Изображение:" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
+                       Margin="100, 10, 0, 0"/>
+            <Button Content="Выберите или перетащите изображение" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="250" Height="100" Margin="90, 0, 0, 0" AllowDrop="True" Drop="ImageButton_Drop"
+                    Command="{Binding ChoseImageCommand}" Style="{StaticResource ImageButtonStyle}"/>
+        </StackPanel>
+        
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 0, 150">
+            
+            <TextBlock Text="Начало рабочего дня:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <xctk:TimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
+                     Text="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{StaticResource LightBlackBrush}" Format="ShortTime"/>
+            
+            <TextBlock Text="Конец рабочего дня:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <xctk:TimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
+                     Text="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{StaticResource LightBlackBrush}" Format="ShortTime"/>
+            
+            <TextBlock Text="Местоположение:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <TextBox Name="LocationBox" Margin="0, 10, 100, 0" Width="250" Height="25"
+                     Text="{Binding LocationProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="Дата основания:" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <xctk:DateTimePicker Margin="0, 10, 100, 0" Width="250" Height="25"
+                                 Text="{Binding FoundationProperty, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="{StaticResource LightBlackBrush}" Format="ShortDate"/>
+            
+            <TextBlock Text="Архитекторы:" FontSize="15" Width="250" Height="25" TextAlignment="Left"
+                       Margin="0, 10, 100, 0"/>
+            <TextBox Name="ArchitectsBox" Margin="0, 10, 100, 0" Width="250" Height="25"
+                     Text="{Binding ArchitectsProperty, UpdateSourceTrigger=PropertyChanged}"/>
+            
+        </StackPanel>
+        
+        <TextBlock Text="Описание:" FontSize="15" Width="250" Height="25" TextAlignment="Center"
+                   Margin="0, 0, 0, 175" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <TextBox Name="DescriptionBox" Margin="0, 0, 0, 90" Width="550" Height="80"
+                 HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                 Text="{Binding DescriptionProperty, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="{Binding DescriptionCharacterCount}" FontSize="15" Width="250" Height="25" TextAlignment="Center"
+                   Margin="0, 0, 30, 60" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        
+        <Button Content="Добавить" Width="150" Height="35" HorizontalAlignment="Center" Margin="30"
+                Style="{StaticResource DefaultButtonStyle}"
+                VerticalAlignment="Bottom" Command="{Binding AddNewMuseumCommand}"/>
         
     </Grid>
 </Window>

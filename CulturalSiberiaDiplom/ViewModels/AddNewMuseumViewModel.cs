@@ -10,7 +10,7 @@ using CulturalSiberiaDiplom.Services;
 
 namespace CulturalSiberiaDiplom.ViewModels;
 
-public class AddNewEventViewModel : NotifyProperty
+public class AddNewMuseumViewModel : NotifyProperty
 {
     private readonly CulturalSiberiaContext _context;
     
@@ -27,7 +27,7 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
 
-    public List<Eventstype> EventTypes { get; }
+    public List<Museumtype> MuseumTypes { get; }
     
     private int _typeId;
     public int TypeId
@@ -79,34 +79,34 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
 
-    private DateTime _startDateProperty;
-    public DateTime StartDate
+    private TimeOnly _startTimeProperty;
+    public TimeOnly StartTime
     {
-        get => _startDateProperty;
+        get => _startTimeProperty;
         set
         {
-            if (_startDateProperty == value) return;
+            if (_startTimeProperty == value) return;
             
-            _startDateProperty = value;
-            OnPropertyChanged(nameof(StartDate));
+            _startTimeProperty = value;
+            OnPropertyChanged(nameof(StartTime));
         }
     }
 
-    private DateTime _endDateProperty;
-    public DateTime EndDate
+    private TimeOnly _endTimeProperty;
+    public TimeOnly EndTime
     {
-        get => _endDateProperty;
+        get => _endTimeProperty;
         set
         {
-            if (_endDateProperty == value) return;
+            if (_endTimeProperty == value) return;
 
-            _endDateProperty = value;
-            OnPropertyChanged(nameof(EndDate));
+            _endTimeProperty = value;
+            OnPropertyChanged(nameof(EndTime));
         }
     }
 
-    private string? _locationProperty;
-    public string? LocationProperty
+    private string _locationProperty;
+    public string LocationProperty
     {
         get => _locationProperty;
         set
@@ -118,16 +118,29 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
 
-    private int? _capacityProperty;
-    public int? CapacityProperty
+    private DateOnly? _foundationDateProperty;
+    public DateOnly? FoundationProperty
     {
-        get => _capacityProperty;
+        get => _foundationDateProperty;
         set
         {
-            if (_capacityProperty == value) return;
+            if (_foundationDateProperty == value) return;
 
-            _capacityProperty = value; 
-            OnPropertyChanged(nameof(CapacityProperty));
+            _foundationDateProperty = value; 
+            OnPropertyChanged(nameof(FoundationProperty));
+        }
+    }
+
+    private string? _architectsProperty;
+    public string? ArchitectsProperty
+    {
+        get => _architectsProperty;
+        set
+        {
+            if (_architectsProperty == value) return;
+
+            _architectsProperty = value;
+            OnPropertyChanged(nameof(ArchitectsProperty));
         }
     }
 
@@ -150,53 +163,54 @@ public class AddNewEventViewModel : NotifyProperty
     public string DescriptionCharacterCount =>
         $"{DescriptionProperty?.Length ?? 0}/100";
 
-    public ICommand AddNewEventCommand { get; }
+    public ICommand AddNewMuseumCommand { get; }
     public ICommand ChoseImageCommand { get; }
-
-    public AddNewEventViewModel(CulturalSiberiaContext context)
+    
+    public AddNewMuseumViewModel(CulturalSiberiaContext context)
     {
         _context = context;
-        EventTypes = _context.Eventstypes.ToList();
-        AddNewEventCommand = new RelayCommand(async () => await AddNewEvent());
+        MuseumTypes = _context.Museumtypes.ToList();
+        AddNewMuseumCommand = new RelayCommand(async () => await AddNewMuseum());
         ChoseImageCommand = new RelayCommand(OnChoseImage);
     }
-    
-    private async Task AddNewEvent()
+
+    private async Task AddNewMuseum()
     {
         try
         {
-            if (!InputValidator.ValidateNewEvent(TitleProperty, LocationProperty, PriceProperty, CapacityProperty))
+            if (!InputValidator.ValidateNewMuseum(TitleProperty, LocationProperty, PriceProperty, ArchitectsProperty))
                 return;
 
-            if (TypeId <= 0)
+            if (TypeId < 0)
             {
-                MessageService.ShowError("Выберите тип мероприятия");
+                MessageService.ShowError("Выберите тип музея");
                 return;
             }
 
-            var @event = new Event
+            var museum = new Museum
             {
-                Title = TitleProperty,
-                TypeId = TypeId,
-                StartDate = StartDate,
-                EndDate = EndDate,
+                Name = TitleProperty,
                 Location = LocationProperty,
-                Price = PriceProperty,
-                Capacity = CapacityProperty,
+                TypeId = TypeId,
+                Price = PriceProperty ?? 0,
+                StartWorkingTime = StartTime,
+                EndWorkingTime = EndTime,
+                Architects = ArchitectsProperty,
+                DateOfFoundation = FoundationProperty,
                 Description = DescriptionProperty,
-                CreatedBy = CurrentUser.SelectedUser!.Id,
+                StatusId = 2,
                 ImageMediaId = null
             };
 
-            _context.Events.Add(@event);
+            _context.Museums.Add(museum);
             await _context.SaveChangesAsync();
 
             if (ImageBytes?.Length > 0)
             {
                 var mediaFileId = await MediaFileService.SaveMediaFileAsync(
-                    "Events",
-                    @event.Id,
-                    $"event_{@event.Id}.png",
+                    "Museum",
+                    museum.Id,
+                    $"museum_{museum.Id}.png",
                     "image/png",
                     ImageBytes,
                     DateTime.Now,
@@ -204,30 +218,42 @@ public class AddNewEventViewModel : NotifyProperty
 
                 if (mediaFileId.HasValue)
                 {
-                    @event.ImageMediaId = mediaFileId.Value;
-                    _context.Update(@event);
+                    museum.ImageMediaId = mediaFileId.Value;
+                    _context.Update(museum);
                     await _context.SaveChangesAsync();
                 }
             }
 
-            MessageService.ShowSuccess("Мероприятие добавлено");
+            MessageService.ShowSuccess("Музей добавлен");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Ошибка добавления мероприятия " + ex.Message);
+            Console.WriteLine("Ошибка добавления музея " + ex.Message);
             
-            MessageService.ShowError("Ошибка добавления мероприятия");
+            if (ex.InnerException != null)
+                Console.WriteLine("Внутренняя ошибка добавления музея: " + ex.InnerException.Message);
+            
+            MessageService.ShowError("Ошибка добавления музея");
         }
     }
-
+    
     private void OnChoseImage()
     {
-        var imageBytes = ImageService.ChooseImage();
+        try
+        {
+            var imageBytes = ImageService.ChooseImage();
 
-        ImageBytes = imageBytes ?? null;
+            ImageBytes = imageBytes ?? null;
 
-        if (imageBytes != null) 
-            SetImage(imageBytes);
+            if (imageBytes != null)
+                SetImage(imageBytes);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ошибка добавления изображения" + ex.Message);
+            
+            MessageService.ShowError("Ошибка добавления изображения");
+        }
     }
     
     private void SetImage(byte[] imageBytes)

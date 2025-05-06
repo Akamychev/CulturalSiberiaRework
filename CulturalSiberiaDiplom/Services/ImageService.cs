@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
 namespace CulturalSiberiaDiplom.Services;
@@ -37,5 +38,18 @@ public static class ImageService
     {
         var ext = Path.GetExtension(filePath)?.ToLower();
         return ext is ".png" or ".jpg" or ".jpeg";
+    }
+    
+    public static BitmapImage SetImage(byte[] imageBytes)
+    {
+        using var stream = new MemoryStream(imageBytes);
+        var bitmap = new BitmapImage();
+        bitmap.BeginInit();
+        bitmap.StreamSource = stream;
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        bitmap.EndInit();
+        bitmap.Freeze();
+
+        return bitmap;
     }
 }
