@@ -36,4 +36,10 @@ public class LoadDataFromDb : NotifyProperty
         return new ObservableCollection<Eventstype>(query);
     }
 
+    public static ObservableCollection<Exhibit> LoadExhibits()
+    {
+        var query = Service.GetDbContext().Exhibits.ToList();
+        return new ObservableCollection<Exhibit>(query);
+    }
+
 }

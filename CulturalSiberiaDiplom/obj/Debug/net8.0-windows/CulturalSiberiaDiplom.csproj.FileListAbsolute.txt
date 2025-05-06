@@ -207,3 +207,9 @@ C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Deb
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\EventDetailsWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\MuseumDetailsWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\EventDetailsWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\MuseumDetailsWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\ExhibitDetailsWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\ExhibitDetailsWindow.baml

@@ -36,6 +36,16 @@
 
     <ItemGroup>
       <Resource Include="Resources\Fonts\pt-astra-serif_regular.ttf" />
+      <None Remove="Resources\Images\default_image_for_details.png" />
+      <Resource Include="Resources\Images\default_image_for_details.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\DetailsWindows\MuseumDetailsWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
 </Project>

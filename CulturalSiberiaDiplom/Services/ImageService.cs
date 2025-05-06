@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Media.Imaging;
+using CulturalSiberiaDiplom.Models;
 using Microsoft.Win32;
 
 namespace CulturalSiberiaDiplom.Services;
@@ -51,5 +53,17 @@ public static class ImageService
         bitmap.Freeze();
 
         return bitmap;
+    }
+
+    public static BitmapSource GetImageById(int imageMediaId, CulturalSiberiaContext context)
+    {
+        var mediaFile = context.Mediafiles.FirstOrDefault(mf => mf.Id == imageMediaId);
+
+        if (mediaFile != null)
+        {
+            return SetImage(mediaFile.FileData);
+        }
+        
+        return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/default_image_for_details.png"));
     }
 }

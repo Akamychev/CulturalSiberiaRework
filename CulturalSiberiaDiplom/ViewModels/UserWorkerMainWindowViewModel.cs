@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO.Pipelines;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
+using CulturalSiberiaDiplom.Views;
+using CulturalSiberiaDiplom.Views.DetailsWindows;
 using CulturalSiberiaDiplom.Views.WorkerOperationsWithEvents;
 using CulturalSiberiaDiplom.Views.WorkerOperationsWithMuseums;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,8 @@ namespace CulturalSiberiaDiplom.ViewModels;
 
 public class UserWorkerMainWindowViewModel : NotifyProperty
 {
+    private readonly CulturalSiberiaContext _context;
+    
     private ObservableCollection<Museum> _allMuseums = new();
     private ObservableCollection<Event> _allEvents = new();
     private ObservableCollection<Event> _allUpcomingEvents = new();
@@ -174,6 +176,28 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             PerformSearch();
         }
     }
+    
+    private Event? _selectedEvent;
+    public Event? SelectedEvent
+    {
+        get => _selectedEvent;
+        set
+        {
+            _selectedEvent = value;
+            OnPropertyChanged(nameof(SelectedEvent));
+        }
+    }
+
+    private Museum? _selectedMuseum;
+    public Museum? SelectedMuseum
+    {
+        get => _selectedMuseum;
+        set
+        {
+            _selectedMuseum = value;
+            OnPropertyChanged(nameof(SelectedMuseum));
+        }
+    }
 
     private readonly User _currentUser;
     public User CurrentUser => _currentUser;
@@ -184,9 +208,13 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
     public ICommand AllEventsReportPDF { get; set; }
     public ICommand AllMuseumsReportPDF { get; set; }
     
-    public UserWorkerMainWindowViewModel(User user)
+    public ICommand OpenEventDetailsCommand { get; }
+    public ICommand OpenMuseumDetailsCommand { get; }
+    
+    public UserWorkerMainWindowViewModel(User user, CulturalSiberiaContext context)
     {
         _currentUser = user;
+        _context = context;
         LoadData();
         
         AddNewEventCommand = new RelayCommand(() =>
@@ -199,8 +227,12 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             var addNewMuseumWindow = new AddNewMuseumWindow();
             addNewMuseumWindow.ShowDialog();
         });
+        
         AllEventsReportPDF = new RelayCommand(async () => await AllEventsReportAsync());
         AllMuseumsReportPDF = new RelayCommand(async () => await AllMuseumsReportAsync());
+
+        OpenEventDetailsCommand = new RelayCommand(() => OnOpenEventDetails(SelectedEvent));
+        OpenMuseumDetailsCommand = new RelayCommand(() => OnOpenMuseumDetails(SelectedMuseum));
     }
 
     private void LoadData()
@@ -251,6 +283,35 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             FoundationDateFrom,
             FoundationDateTo);
         Museums = new ObservableCollection<Museum>(filteredMuseums);
+    }
+    
+    private void OnOpenEventDetails(object? param)
+    {
+        if (param is Event selectedEvent)
+        {
+            var window = new EventDetailsWindow(selectedEvent);
+            window.ShowDialog();
+        }
+    }
+
+    private void OnOpenMuseumDetails(object? param)
+    {
+        if (param is Museum selectedMuseum)
+        {
+            var museumWithTypeInfoAndExhibits =
+                _context.Museums.Include(m => m.Type)
+                    .Include(m => m.MuseumExhibits)
+                    .ThenInclude(e => e.ImageMedia)
+                    .FirstOrDefault(m => m.Id == selectedMuseum.Id);
+
+            if (museumWithTypeInfoAndExhibits != null)
+            {
+                var window = new MuseumDetailsWindow(museumWithTypeInfoAndExhibits);
+                window.ShowDialog();
+            }
+            else
+                MessageService.ShowError("Не удалось загрузить информацию о музее");
+        }
     }
 
     private async Task AllEventsReportAsync()

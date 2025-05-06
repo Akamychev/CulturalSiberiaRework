@@ -144,7 +144,9 @@
 
                             <!-- Список событий -->
                             <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding UpcomingEvents}">
+                                <ListBox ItemsSource="{Binding UpcomingEvents}" 
+                                         SelectedItem="{Binding SelectedEvent}"
+                                         MouseDoubleClick="Events_OnMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical" Margin="10">
@@ -232,7 +234,9 @@
 
                             <!-- Список событий -->
                             <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding Events}">
+                                <ListBox ItemsSource="{Binding Events}" 
+                                         SelectedItem="{Binding SelectedEvent}"
+                                         MouseDoubleClick="Events_OnMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical" Margin="10">
@@ -320,7 +324,9 @@
 
                             <!-- Список событий -->
                             <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding Museums}">
+                                <ListBox ItemsSource="{Binding Museums}" 
+                                         SelectedItem="{Binding SelectedMuseum}"
+                                         MouseDoubleClick="Museums_OnMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Vertical" Margin="10">
