@@ -3,10 +3,107 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views.DetailsWindows"
+        xmlns:local="clr-namespace:CulturalSiberiaDiplom.Services"
         mc:Ignorable="d"
-        Title="ExhibitDetailsWindow" Height="450" Width="800">
-    <Grid>
+        Title="Информация о экспозиции" 
+        Height="320" Width="600"
+        MinHeight="320" MinWidth="600"
+        MaxHeight="400" MaxWidth="650"
+        Background="#202020">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+        <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="TurquoiseBrush" Color="#F0F8FF"/>
+        <SolidColorBrush x:Key="LightBlackBrush" Color="#4F4F4F"/>
         
+        <local:RoleToVisibilityConverter x:Key="RoleToVisibilityConverter"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <!-- Основной контейнер -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя панель (заголовки и кнопки) -->
+        <DockPanel LastChildFill="False" Margin="10">
+            <!-- Левая секция -->
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Margin="0,0,20,0">
+                <!-- Название экспоната -->
+                <TextBlock Text="{Binding Title}" FontSize="16" HorizontalAlignment="Center"
+                           FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <!-- Стоимость и подлинность -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Стоимость -->
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="Стоимость" FontWeight="Bold" FontSize="14" Margin="10,0,60,0"/>
+                        <TextBlock Text="Подлинность" FontWeight="Bold" FontSize="14"/>
+                    </StackPanel>
+
+                    <!-- Подлинность -->
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,40">
+                        <TextBox Text="{Binding Price}" VerticalContentAlignment="Center"
+                                 BorderBrush="Gray" BorderThickness="1" Width="100" Height="20" 
+                                 Margin="0,0,80,0" IsReadOnly="True"/>
+                        <CheckBox IsChecked="{Binding Originality}" Margin="0,0,0,0"
+                                  IsHitTestVisible="False" Width="20" Height="20" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Кнопки -->
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <Button Content="Редактировать" Width="120" Height="35" Margin="0,0,30,0"
+                            Visibility="{Binding CurrentUser.Position.PositionName,
+                            Converter={StaticResource RoleToVisibilityConverter},
+                            ConverterParameter=Worker}"/>
+                    <Button Content="Удалить" Width="100" Height="35"
+                            Visibility="{Binding CurrentUser.Position.PositionName,
+                            Converter={StaticResource RoleToVisibilityConverter},
+                            ConverterParameter=Worker}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Правая секция (изображение) -->
+            <Border BorderBrush="Gray" BorderThickness="1" DockPanel.Dock="Right" Width="300" Height="200">
+                <Image Source="{Binding PreviewImage}" Stretch="UniformToFill"/>
+            </Border>
+        </DockPanel>
+
+        <!-- Нижняя панель (описание) -->
+        <TextBox Text="{Binding Description}" Margin="10" Grid.Row="1" IsReadOnly="True"/>
     </Grid>
 </Window>

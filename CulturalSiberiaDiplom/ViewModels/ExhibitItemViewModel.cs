@@ -6,16 +6,15 @@ namespace CulturalSiberiaDiplom.ViewModels;
 
 public class ExhibitItemViewModel
 {
+    public Exhibit Exhibit { get; set; }
     public string Name { get; set; }
     public BitmapSource PreviewImage { get; set; }
 
     public ExhibitItemViewModel(Exhibit exhibit, CulturalSiberiaContext context)
     {
+        Exhibit = exhibit;
         Name = exhibit.Name;
-
-        if (exhibit.ImageMediaId.HasValue)
-            PreviewImage = ImageService.GetImageById(exhibit.ImageMediaId.Value, context);
-        else
-            PreviewImage = ImageService.GetImageById(-1, context);
+        PreviewImage = exhibit.ImageMediaId.HasValue ?
+            ImageService.GetImageById(exhibit.ImageMediaId.Value, context) : ImageService.GetImageById(-1, context);
     }
 }

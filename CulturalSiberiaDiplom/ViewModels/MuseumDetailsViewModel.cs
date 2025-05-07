@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
+using CulturalSiberiaDiplom.Views.DetailsWindows;
 using Microsoft.EntityFrameworkCore;
 
 namespace CulturalSiberiaDiplom.ViewModels;
@@ -25,8 +28,8 @@ public class MuseumDetailsViewModel : NotifyProperty
 
     public ObservableCollection<ExhibitItemViewModel> Exhibits { get; set; }
     
-    private Exhibit? _selectedExhibit;
-    public Exhibit? SelectedExhibit
+    private ExhibitItemViewModel _selectedExhibit;
+    public ExhibitItemViewModel SelectedExhibit
     {
         get => _selectedExhibit;
         set
@@ -35,6 +38,8 @@ public class MuseumDetailsViewModel : NotifyProperty
             OnPropertyChanged(nameof(SelectedExhibit));
         }
     }
+    
+    public ICommand OpenExhibitDetailsCommand { get; }
 
     public MuseumDetailsViewModel(Museum museum, CulturalSiberiaContext context, User user)
     {
@@ -52,6 +57,28 @@ public class MuseumDetailsViewModel : NotifyProperty
             ImageService.GetImageById(museum.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
 
         Exhibits = new ObservableCollection<ExhibitItemViewModel>(LoadExhibitsData(museum));
+
+        OpenExhibitDetailsCommand = new RelayCommand(() => OnOpenExhibitDetails(SelectedExhibit));
+    }
+    
+    private void OnOpenExhibitDetails(object? param)
+    {
+        if (param is ExhibitItemViewModel selectedExhibit)
+        {
+            var exhibitWithOriginalityStatus =
+                _context.Exhibits.Include(e => e.OriginalityStatus)
+                    .FirstOrDefault(e => e.Id == selectedExhibit.Exhibit.Id);
+
+            if (exhibitWithOriginalityStatus != null)
+            {
+                var window = new ExhibitDetailsWindow(exhibitWithOriginalityStatus, _context, CurrentUser);
+                window.ShowDialog();
+            }
+            else
+                MessageService.ShowError("Не удалось загрузить информацию об экспонате");
+        }
+        else
+            MessageService.ShowError("Не удалось открыть экспонат");
     }
 
     private IEnumerable<ExhibitItemViewModel> LoadExhibitsData(Museum museum)

@@ -134,10 +134,11 @@
                     Converter={StaticResource RoleToVisibilityConverter},
                     ConverterParameter=Worker}"/>
             
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" MaxHeight="200">
                 <Border BorderBrush="Gray" BorderThickness="1">
                     <ListBox ItemsSource="{Binding Exhibits}" 
-                             SelectedItem="{Binding SelectedExhibit}">
+                             SelectedItem="{Binding SelectedExhibit}"
+                             MouseDoubleClick="Exhibit_OnMouseDoubleClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="10">

@@ -143,21 +143,24 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Список событий -->
-                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding UpcomingEvents}" 
-                                         SelectedItem="{Binding SelectedEvent}"
-                                         MouseDoubleClick="Events_OnMouseDoubleClick">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="10">
-                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
-                                                <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                                <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                        Margin="10,10,10,10">
+                                    <ListBox ItemsSource="{Binding UpcomingEvents}" 
+                                             SelectedItem="{Binding SelectedEvent}"
+                                             MouseDoubleClick="Events_OnMouseDoubleClick">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="10">
+                                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                    <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                    <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </ScrollViewer>
 
                             <!-- Фильтры -->
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
@@ -233,21 +236,24 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Список событий -->
-                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding Events}" 
-                                         SelectedItem="{Binding SelectedEvent}"
-                                         MouseDoubleClick="Events_OnMouseDoubleClick">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="10">
-                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
-                                                <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                                <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                        Margin="10,10,10,10">
+                                    <ListBox ItemsSource="{Binding Events}" 
+                                             SelectedItem="{Binding SelectedEvent}"
+                                             MouseDoubleClick="Events_OnMouseDoubleClick">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="10">
+                                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                    <TextBlock Text="{Binding StartDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                    <TextBlock Text="{Binding EndDate}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </ScrollViewer>
 
                             <!-- Фильтры -->
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
@@ -323,21 +329,24 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Список событий -->
-                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}" Margin="10,10,10,10">
-                                <ListBox ItemsSource="{Binding Museums}" 
-                                         SelectedItem="{Binding SelectedMuseum}"
-                                         MouseDoubleClick="Museums_OnMouseDoubleClick">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical" Margin="10">
-                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
-                                                <TextBlock Text="{Binding StartWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                                <TextBlock Text="{Binding EndWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                        Margin="10,10,10,10">
+                                    <ListBox ItemsSource="{Binding Museums}" 
+                                             SelectedItem="{Binding SelectedMuseum}"
+                                             MouseDoubleClick="Museums_OnMouseDoubleClick">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="10">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                                    <TextBlock Text="{Binding StartWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                    <TextBlock Text="{Binding EndWorkingTime}" Foreground="{StaticResource TurquoiseBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </ScrollViewer>
 
                             <!-- Фильтры -->
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
