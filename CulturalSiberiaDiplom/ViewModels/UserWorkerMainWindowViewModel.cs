@@ -220,11 +220,23 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
         AddNewEventCommand = new RelayCommand(() =>
         {
             var addNewEventWindow = new AddNewEventWindow();
+
+            ((AddNewEventViewModel)addNewEventWindow.DataContext).AddEvent += (s, e) =>
+            {
+                LoadData();
+            };
+            
             addNewEventWindow.ShowDialog();
         });
         AddNewMuseumCommand = new RelayCommand(() =>
         {
             var addNewMuseumWindow = new AddNewMuseumWindow();
+
+            ((AddNewMuseumViewModel)addNewMuseumWindow.DataContext).AddMuseum += (s, e) =>
+            {
+                LoadData();
+            };
+            
             addNewMuseumWindow.ShowDialog();
         });
         
@@ -290,6 +302,17 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
         if (param is Event selectedEvent)
         {
             var window = new EventDetailsWindow(selectedEvent);
+
+            ((EventDetailsViewModel)window.DataContext).EventDeleted += (s, e) =>
+            {
+                LoadData();
+            };
+
+            ((EventDetailsViewModel)window.DataContext).EventUpdated += (s, e) =>
+            {
+                LoadData();
+            };
+            
             window.ShowDialog();
         }
     }
@@ -307,6 +330,17 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             if (museumWithTypeInfoAndExhibits != null)
             {
                 var window = new MuseumDetailsWindow(museumWithTypeInfoAndExhibits);
+
+                ((MuseumDetailsViewModel)window.DataContext).MuseumDeleted += (s, e) =>
+                {
+                    LoadData();
+                };
+
+                ((MuseumDetailsViewModel)window.DataContext).MuseumUpdated += (s, e) =>
+                {
+                    LoadData();
+                };
+
                 window.ShowDialog();
             }
             else

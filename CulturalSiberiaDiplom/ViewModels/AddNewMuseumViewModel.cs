@@ -13,6 +13,8 @@ namespace CulturalSiberiaDiplom.ViewModels;
 public class AddNewMuseumViewModel : NotifyProperty
 {
     private readonly CulturalSiberiaContext _context;
+
+    public event EventHandler? AddMuseum;
     
     private string _titleProperty;
     public string TitleProperty
@@ -68,8 +70,8 @@ public class AddNewMuseumViewModel : NotifyProperty
         }
     }
     
-    private BitmapSource _previewImage;
-    public BitmapSource PreviewImage
+    private BitmapSource? _previewImage;
+    public BitmapSource? PreviewImage
     {
         get => _previewImage;
         set
@@ -187,6 +189,12 @@ public class AddNewMuseumViewModel : NotifyProperty
                 return;
             }
 
+            if (StartTime == default || EndTime == default || StartTime > EndTime)
+            {
+                MessageService.ShowError("Некорректный ввод рабочего времени");
+                return;
+            }
+
             var museum = new Museum
             {
                 Name = TitleProperty,
@@ -198,7 +206,7 @@ public class AddNewMuseumViewModel : NotifyProperty
                 Architects = ArchitectsProperty,
                 DateOfFoundation = FoundationProperty,
                 Description = DescriptionProperty,
-                StatusId = 2,
+                StatusId = 1,
                 ImageMediaId = null
             };
 
@@ -225,6 +233,19 @@ public class AddNewMuseumViewModel : NotifyProperty
             }
 
             MessageService.ShowSuccess("Музей добавлен");
+            AddMuseum?.Invoke(this, EventArgs.Empty);
+
+            TitleProperty = "";
+            LocationProperty = "";
+            TypeId = 0;
+            PriceProperty = null;
+            StartTime = default;
+            EndTime = default;
+            ArchitectsProperty = null;
+            FoundationProperty = null;
+            DescriptionProperty = null;
+            ImageBytes = null;
+            PreviewImage = null;
         }
         catch (Exception ex)
         {

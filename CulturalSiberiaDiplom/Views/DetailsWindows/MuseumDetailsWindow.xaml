@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Services"
         mc:Ignorable="d"
         Title="Информация о музее"
@@ -18,14 +19,27 @@
         <SolidColorBrush x:Key="LightBlackBrush" Color="#4F4F4F"/>
         
         <local:RoleToVisibilityConverter x:Key="RoleToVisibilityConverter"/>
+        <local:BooleanToEditSaveConverter x:Key="BooleanToEditSaveConverter"/>
 
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
+            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
         </Style>
         <Style TargetType="TextBox">
             <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
             <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.IsInEditMode,
+                RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                    <Setter Property="IsReadOnly" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
@@ -41,10 +55,20 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="ListBox">
-            <Setter Property="Foreground" Value="{StaticResource TurquoiseBrush}"/>
-            <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        <Style TargetType="TextBox" x:Key="ForTextEditableTextBlocksStyle">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.IsInEditMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                    <Setter Property="IsReadOnly" Value="False"/>
+                    <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -65,22 +89,101 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" FontSize="16"
-                       FontWeight="Bold" Margin="0,0,0,20" />
+            <TextBox Text="{Binding Title}" Style="{StaticResource ForTextEditableTextBlocksStyle}"
+                     HorizontalAlignment="Center" FontSize="16"
+                     FontWeight="Bold" Margin="0,0,0,20" />
             
-            <TextBlock Text="{Binding Location}" HorizontalAlignment="Center" FontSize="15"
-                       FontWeight="Bold" Margin="0,0,0,20" Grid.Row="1"/>
+            <TextBox Text="{Binding Location}" Style="{StaticResource ForTextEditableTextBlocksStyle}"
+                     HorizontalAlignment="Center" FontSize="15"
+                     FontWeight="Bold" Margin="0,0,0,20" Grid.Row="1"/>
             
             <TextBox Text="{Binding Description}" BorderBrush="Gray" BorderThickness="1"
-                     Margin="0,0,0,20" Height="100" Grid.Row="2" IsReadOnly="True"/>
+                     Margin="0,0,0,20" Height="100" Grid.Row="2"/>
             
             <TextBlock Text="Время проведения" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="0,0,0,10" Grid.Row="3"/>
             
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Grid.Row="4" HorizontalAlignment="Center">
-                <TextBox Text="{Binding StartDate}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         Width="150" Height="30" Margin="0,0,20,0" IsReadOnly="True"/>
-                <TextBox Text="{Binding EndDate}" Width="150" Height="30"
-                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center" IsReadOnly="True"/>
+                <ContentControl>
+                    <ContentControl.Content>
+                        <TextBox Text="{Binding StartTime}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                 Width="150" Height="30" Margin="0,0,20,0" IsReadOnly="True"/>
+                    </ContentControl.Content>
+                    
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DataContext.StartTime, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                                 Width="150" Height="30" Margin="0,0,20,0" IsReadOnly="True"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DataContext.IsInEditMode,
+                                 RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <toolkit:TimePicker Text="{Binding DataContext.EditStartTime,
+                                                RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    Format="ShortTime"
+                                                                    Width="150"
+                                                                    Height="30"
+                                                                    Margin="0,0,20,0"
+                                                                    Background="{StaticResource LightBlackBrush}"
+                                                                    Foreground="{StaticResource AliceBlueBrush}"/>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+                
+                <ContentControl>
+                    <ContentControl.Content>
+                        <TextBox Text="{Binding EndTime}" Width="150" Height="30"
+                                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" IsReadOnly="True"/>
+                    </ContentControl.Content>
+                    
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DataContext.EndTime,
+                                         RelativeSource={RelativeSource AncestorType=Window}}"
+                                                 Width="150" Height="30"
+                                                 HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DataContext.IsInEditMode,
+                                RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <toolkit:TimePicker Text="{Binding DataContext.EditEndTime,
+                                                RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    Format="ShortTime"
+                                                                    Width="150" Height="30"
+                                                                    Background="{StaticResource LightBlackBrush}"
+                                                                    Foreground="{StaticResource AliceBlueBrush}"/>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,20,10" Grid.Row="5" HorizontalAlignment="Center">
@@ -93,11 +196,13 @@
                          BorderBrush="Gray" BorderThickness="1" Width="150" Height="30" Margin="0,0,20,0"
                          IsReadOnly="True"/>
                 <TextBox Text="{Binding Price}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         BorderBrush="Gray" BorderThickness="1" Width="150" Height="30" IsReadOnly="True"/>
+                         BorderBrush="Gray" BorderThickness="1" Width="150" Height="30"/>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Row="7" HorizontalAlignment="Center">
-                <Button Content="Редактировать" Width="120" Height="35" Margin="0,0,20,0" 
+                <Button Content="{Binding IsInEditMode, Converter={StaticResource BooleanToEditSaveConverter}}" 
+                        Width="120" Height="35" Margin="0,0,20,0"
+                        Command="{Binding ToggleEditModeOrSaveChangesCommand}"
                         Visibility="{Binding CurrentUser.Position.PositionName,
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=Worker}"/>
@@ -105,7 +210,7 @@
                         Visibility="{Binding CurrentUser.Position.PositionName,
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=User}"/>
-                <Button Content="Удалить" Width="120" Height="35"
+                <Button Content="Удалить" Width="120" Height="35" Command="{Binding DeleteCommand}"
                         Visibility="{Binding CurrentUser.Position.PositionName,
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=Worker}"/>
@@ -122,8 +227,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <Image Source="{Binding PreviewImage}" Stretch="UniformToFill" Margin="0,0,0,10" Height="150" Width="150"
-                   Grid.Row="1"/>
+            <Image Source="{Binding PreviewImage}" Stretch="UniformToFill" 
+                   Margin="0,0,0,10" Height="150" Width="150" Grid.Row="1"
+                   AllowDrop="{Binding DataContext.IsInEditMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                   Drop="Image_Drop" MouseDown="Image_MouseDown"/>
             
             <TextBlock Text="Экспозиции музея" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center"
                        Margin="0,0,0,20" Grid.Row="2"/>

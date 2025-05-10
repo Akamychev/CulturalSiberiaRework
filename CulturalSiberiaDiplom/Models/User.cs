@@ -37,7 +37,13 @@ public partial class User
 
     public virtual Mediafile? AvatarMedia { get; set; }
 
-    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+    public virtual ICollection<Event> EventCreatedByNavigations { get; set; } = new List<Event>();
+
+    public virtual ICollection<Event> EventUpdatedByNavigations { get; set; } = new List<Event>();
+
+    public virtual ICollection<Exhibit> Exhibits { get; set; } = new List<Exhibit>();
+
+    public virtual ICollection<Museum> Museums { get; set; } = new List<Museum>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 

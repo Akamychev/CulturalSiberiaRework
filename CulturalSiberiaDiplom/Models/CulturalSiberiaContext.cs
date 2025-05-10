@@ -19,6 +19,8 @@ public partial class CulturalSiberiaContext : DbContext
 
     public virtual DbSet<Event> Events { get; set; }
 
+    public virtual DbSet<Eventsstatus> Eventsstatuses { get; set; }
+
     public virtual DbSet<Eventstype> Eventstypes { get; set; }
 
     public virtual DbSet<Exhibit> Exhibits { get; set; }
@@ -96,6 +98,10 @@ public partial class CulturalSiberiaContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Capacity).HasColumnName("capacity");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.EndDate)
@@ -111,12 +117,17 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.StartDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("start_date");
+            entity.Property(e => e.StatusId).HasColumnName("status_id");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .HasColumnName("title");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Events)
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.EventCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("events_created_by_fkey");
@@ -125,10 +136,19 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasForeignKey(d => d.ImageMediaId)
                 .HasConstraintName("events_image_media_id_fkey");
 
+            entity.HasOne(d => d.Status).WithMany(p => p.Events)
+                .HasForeignKey(d => d.StatusId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_event_status");
+
             entity.HasOne(d => d.Type).WithMany(p => p.Events)
                 .HasForeignKey(d => d.TypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("events_type_id_fkey");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.EventUpdatedByNavigations)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("events_updated_by_fkey");
 
             entity.HasMany(d => d.Museums).WithMany(p => p.Events)
                 .UsingEntity<Dictionary<string, object>>(
@@ -148,6 +168,18 @@ public partial class CulturalSiberiaContext : DbContext
                         j.IndexerProperty<int>("EventId").HasColumnName("event_id");
                         j.IndexerProperty<int>("MuseumId").HasColumnName("museum_id");
                     });
+        });
+
+        modelBuilder.Entity<Eventsstatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("eventsstatus_pkey");
+
+            entity.ToTable("eventsstatus", "Part1");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.StatusName)
+                .HasMaxLength(255)
+                .HasColumnName("status_name");
         });
 
         modelBuilder.Entity<Eventstype>(entity =>
@@ -183,6 +215,10 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.TimestampOfReceipt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("timestamp_of_receipt");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
 
             entity.HasOne(d => d.ImageMedia).WithMany(p => p.Exhibits)
                 .HasForeignKey(d => d.ImageMediaId)
@@ -197,6 +233,10 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("exhibit_status_id_fkey");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.Exhibits)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("exhibit_updated_by_fkey");
         });
 
         modelBuilder.Entity<Exhibitstatus>(entity =>
@@ -272,6 +312,10 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.StartWorkingTime).HasColumnName("start_working_time");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
 
             entity.HasOne(d => d.ImageMedia).WithMany(p => p.Museums)
                 .HasForeignKey(d => d.ImageMediaId)
@@ -286,6 +330,10 @@ public partial class CulturalSiberiaContext : DbContext
                 .HasForeignKey(d => d.TypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("museum_type_id_fkey");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.Museums)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("museum_updated_by_fkey");
 
             entity.HasMany(d => d.MuseumExhibits).WithMany(p => p.Museums)
                 .UsingEntity<Dictionary<string, object>>(

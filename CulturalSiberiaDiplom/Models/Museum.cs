@@ -29,11 +29,17 @@ public partial class Museum
 
     public int? ImageMediaId { get; set; }
 
+    public int? UpdatedBy { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
     public virtual Mediafile? ImageMedia { get; set; }
 
     public virtual Museumstatus Status { get; set; } = null!;
 
     public virtual Museumtype Type { get; set; } = null!;
+
+    public virtual User? UpdatedByNavigation { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 

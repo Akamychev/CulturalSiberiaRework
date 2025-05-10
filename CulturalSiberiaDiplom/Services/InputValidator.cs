@@ -151,7 +151,7 @@ public static class InputValidator
             return false;
         }
 
-        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9,]+$"))
+        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
         {
             MessageBox.Show("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов",
                 "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -179,7 +179,26 @@ public static class InputValidator
             return false;
         }
 
-        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9,-]+$"))
+        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
+        {
+            MessageService.ShowError("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool ValidateNewExhibit(string title, decimal? price)
+    {
+        if (!ValidatePrice(price)) return false;
+        
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            MessageService.ShowError("Все обязательные поля должны быть заполнены");
+            return false;
+        }
+        
+        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
         {
             MessageService.ShowError("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов");
             return false;
@@ -192,7 +211,7 @@ public static class InputValidator
     {
         if (string.IsNullOrWhiteSpace(location)) return true;
 
-        if (!Regex.IsMatch(location, @"^[А-Яа-яA-Za-zёЁ0-9,/]+$"))
+        if (!Regex.IsMatch(location, @"^[А-Яа-яA-Za-zёЁ0-9,/. ]+$"))
         {
             MessageBox.Show(
                 "Местоположение не должно содержать ничего кроме букв, цифр, знаков ',' и '/', а также пробелов",
@@ -238,9 +257,9 @@ public static class InputValidator
         if (string.IsNullOrWhiteSpace(architects))
             return true;
 
-        if (!Regex.IsMatch(architects, @"^[A-Za-zА-Яа-яёЁ,-]+$"))
+        if (!Regex.IsMatch(architects, @"^[A-Za-zА-Яа-яёЁ, ]+$"))
         {
-            MessageService.ShowError("Поле 'Архитекторы' не должно содержать ничего кроме букв, знаков ',' и '-', а также пробелов");
+            MessageService.ShowError("Поле 'Архитекторы' не должно содержать ничего кроме букв, знака ',', а также пробелов");
             return false;
         }
 

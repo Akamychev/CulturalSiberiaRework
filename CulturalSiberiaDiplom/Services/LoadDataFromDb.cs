@@ -9,13 +9,13 @@ public class LoadDataFromDb : NotifyProperty
 {
     public static ObservableCollection<Museum> LoadMuseums()
     {
-        var query = Service.GetDbContext().Museums.ToList();
+        var query = Service.GetDbContext().Museums.Where(m => m.StatusId == 1).ToList();
         return new ObservableCollection<Museum>(query);
     }
 
     public static ObservableCollection<Event> LoadEvents()
     {
-        var query = Service.GetDbContext().Events.ToList();
+        var query = Service.GetDbContext().Events.Where(e => e.StatusId == 1 || e.StatusId == 2).ToList();
         return new ObservableCollection<Event>(query);
     }
 
@@ -25,7 +25,7 @@ public class LoadDataFromDb : NotifyProperty
         DateTime nextWeek = today.AddDays(7);
 
         var query = Service.GetDbContext().Events
-            .Where(e => e.StartDate >= today && e.StartDate <= nextWeek).ToList();
+            .Where(e => e.StartDate >= today && e.StartDate <= nextWeek && e.StatusId == 1 || e.StatusId == 2).ToList();
 
         return new ObservableCollection<Event>(query);
     }

@@ -23,11 +23,17 @@ public partial class Exhibit
 
     public DateTime TimestampOfReceipt { get; set; }
 
+    public int? UpdatedBy { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
     public virtual Mediafile? ImageMedia { get; set; }
 
     public virtual Originalitystatus OriginalityStatus { get; set; } = null!;
 
     public virtual Exhibitstatus Status { get; set; } = null!;
+
+    public virtual User? UpdatedByNavigation { get; set; }
 
     public virtual ICollection<Museum> Museums { get; set; } = new List<Museum>();
 }

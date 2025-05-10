@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -13,6 +14,8 @@ namespace CulturalSiberiaDiplom.ViewModels;
 public class AddNewEventViewModel : NotifyProperty
 {
     private readonly CulturalSiberiaContext _context;
+
+    public event EventHandler? AddEvent;
     
     private string _titleProperty;
     public string TitleProperty
@@ -68,8 +71,8 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
     
-    private BitmapSource _previewImage;
-    public BitmapSource PreviewImage
+    private BitmapSource? _previewImage;
+    public BitmapSource? PreviewImage
     {
         get => _previewImage;
         set
@@ -79,31 +82,9 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
 
-    private DateTime _startDateProperty;
-    public DateTime StartDate
-    {
-        get => _startDateProperty;
-        set
-        {
-            if (_startDateProperty == value) return;
-            
-            _startDateProperty = value;
-            OnPropertyChanged(nameof(StartDate));
-        }
-    }
+    public DateTime StartDate { get; set; }
 
-    private DateTime _endDateProperty;
-    public DateTime EndDate
-    {
-        get => _endDateProperty;
-        set
-        {
-            if (_endDateProperty == value) return;
-
-            _endDateProperty = value;
-            OnPropertyChanged(nameof(EndDate));
-        }
-    }
+    public DateTime EndDate { get; set; }
 
     private string? _locationProperty;
     public string? LocationProperty
@@ -174,6 +155,12 @@ public class AddNewEventViewModel : NotifyProperty
                 return;
             }
 
+            if (StartDate == default || EndDate == default || StartDate > EndDate)
+            {
+                MessageService.ShowError("Некорректный ввод даты");
+                return;
+            }
+
             var @event = new Event
             {
                 Title = TitleProperty,
@@ -185,7 +172,9 @@ public class AddNewEventViewModel : NotifyProperty
                 Capacity = CapacityProperty,
                 Description = DescriptionProperty,
                 CreatedBy = CurrentUser.SelectedUser!.Id,
-                ImageMediaId = null
+                CreatedAt = DateTime.Now,
+                ImageMediaId = null,
+                StatusId = 1
             };
 
             _context.Events.Add(@event);
@@ -209,8 +198,20 @@ public class AddNewEventViewModel : NotifyProperty
                     await _context.SaveChangesAsync();
                 }
             }
-
+            
             MessageService.ShowSuccess("Мероприятие добавлено");
+            AddEvent?.Invoke(this, EventArgs.Empty);
+
+            TitleProperty = "";
+            TypeId = 0;
+            StartDate = default;
+            EndDate = default;
+            LocationProperty = null;
+            PriceProperty = null;
+            CapacityProperty = null;
+            DescriptionProperty = null;
+            ImageBytes = null;
+            PreviewImage = null;
         }
         catch (Exception ex)
         {
