@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -82,9 +81,35 @@ public class AddNewEventViewModel : NotifyProperty
         }
     }
 
-    public DateTime StartDate { get; set; }
+    private DateTime _startDate;
+    public DateTime StartDate
+    {
+        get => _startDate;
+        set => SetField(ref _startDate, value);
+    }
 
-    public DateTime EndDate { get; set; }
+    private DateTime _endDate;
+    public DateTime EndDate
+    {
+        get => _endDate;
+        set => SetField(ref _endDate, value);
+    }
+
+    // private string _editStartDate;
+    // public string EditStartDate
+    // {
+    //     get => _editStartDate;
+    //     set
+    //     {
+    //         if ()
+    //     }
+    // }
+    //
+    // private string _editEndDate;
+    // public string EditEndDate
+    // {
+    //     
+    // }
 
     private string? _locationProperty;
     public string? LocationProperty
@@ -138,6 +163,8 @@ public class AddNewEventViewModel : NotifyProperty
     {
         _context = context;
         EventTypes = _context.Eventstypes.ToList();
+        StartDate = DateTime.Now;
+        EndDate = DateTime.Now;
         AddNewEventCommand = new RelayCommand(async () => await AddNewEvent());
         ChoseImageCommand = new RelayCommand(OnChoseImage);
     }
@@ -146,18 +173,13 @@ public class AddNewEventViewModel : NotifyProperty
     {
         try
         {
-            if (!InputValidator.ValidateNewEvent(TitleProperty, LocationProperty, PriceProperty, CapacityProperty))
+            if (!InputValidator.ValidateNewEvent(TitleProperty, LocationProperty, PriceProperty, CapacityProperty,
+                    StartDate, EndDate))
                 return;
 
             if (TypeId <= 0)
             {
                 MessageService.ShowError("Выберите тип мероприятия");
-                return;
-            }
-
-            if (StartDate == default || EndDate == default || StartDate > EndDate)
-            {
-                MessageService.ShowError("Некорректный ввод даты");
                 return;
             }
 
@@ -204,8 +226,8 @@ public class AddNewEventViewModel : NotifyProperty
 
             TitleProperty = "";
             TypeId = 0;
-            StartDate = default;
-            EndDate = default;
+            StartDate = DateTime.Now;
+            EndDate = DateTime.Now;
             LocationProperty = null;
             PriceProperty = null;
             CapacityProperty = null;

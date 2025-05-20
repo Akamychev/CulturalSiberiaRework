@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text.RegularExpressions;
 using System.Windows;
-using CulturalSiberiaDiplom.Models;
 
 namespace CulturalSiberiaDiplom.Services;
 
@@ -139,11 +140,35 @@ public static class InputValidator
         return true;
     }
 
-    public static bool ValidateNewEvent(string title, string? location, decimal? price, int? capacity)
+    public static bool ValidateAvailableSeats(string? availableSeats)
+    {
+        if (availableSeats is null or "Неизвестно")
+        {
+            MessageService.ShowInfo("Нет доступных билетов");
+            return false;
+        }
+
+        if (!int.TryParse(availableSeats, out var seats))
+        {
+            MessageService.ShowError("Ошибка при обработке количества мест");
+            return false;
+        }
+
+        if (seats <= 0)
+        {
+            MessageService.ShowInfo("Все билеты распроданы");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool ValidateNewEvent(string title, string? location, decimal? price, int? capacity, DateTime startDate, DateTime endDate)
     {
         if (!ValidateLocation(location)) return false;
         if (!ValidatePrice(price)) return false;
         if (!ValidateCapacity(capacity)) return false;
+        if (!ValidateEventDates(startDate, endDate)) return false;
 
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -161,12 +186,14 @@ public static class InputValidator
         return true;
     }
 
-    public static bool ValidateNewMuseum(string title, string location, decimal? price, string? architects)
+    public static bool ValidateNewMuseum(string title, string location, decimal? price, string? architects,
+        TimeOnly startTime, TimeOnly endTime)
     {
         if (!ValidateLocation(location)) return false;
         if (!ValidatePrice(price)) return false;
         if (!ValidateArchitects(architects)) return false;
-
+        if (!ValidateMuseumTimes(startTime, endTime)) return false;
+        
         if (string.IsNullOrWhiteSpace(title))
         {
             MessageService.ShowError("Все обязательные поля должны быть заполнены");
@@ -201,6 +228,46 @@ public static class InputValidator
         if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
         {
             MessageService.ShowError("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool ValidateEventDates(DateTime startDate, DateTime endDate)
+    {
+        if (startDate == default && endDate == default)
+        {
+            MessageService.ShowError("Некорректный ввод даты");
+            return false;
+        }
+
+        if (startDate >= endDate)
+        {
+            MessageService.ShowError("Дата начала не может быть меньше или равной даты окончания");
+            return false;
+        }
+
+        if (startDate < DateTime.Now)
+        {
+            MessageService.ShowError("Дата и время начала мероприятия не могут быть меньше сегодняшней даты");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool ValidateMuseumTimes(TimeOnly startTime, TimeOnly endTime)
+    {
+        if (startTime == default && endTime == default)
+        {
+            MessageService.ShowError("Некорректный ввод времени");
+            return false;
+        }
+
+        if (startTime >= endTime)
+        {
+            MessageService.ShowError("Время начала не может быть меньше или равной времени окончания");
             return false;
         }
 

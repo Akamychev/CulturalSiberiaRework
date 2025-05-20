@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -78,16 +77,7 @@ public class MuseumDetailsViewModel : NotifyProperty
         _museum = museum;
         _window = window;
         
-        Title = museum.Name;
-        Location = museum.Location;
-        Description = museum.Description ?? "Отсутствует";
-        StartTime = museum.StartWorkingTime.ToString("t");
-        EndTime = museum.EndWorkingTime.ToString("t");
-        Type = museum.Type.TypeName;
-        Price = museum.Price?.ToString() ?? "Не указана";
-        PreviewImage = museum.ImageMediaId.HasValue ?
-            ImageService.GetImageById(museum.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
-
+        LoadData();
         LoadExhibitsData(museum);
 
         OpenExhibitDetailsCommand = new RelayCommand(() => OnOpenExhibitDetails(SelectedExhibit));
@@ -95,6 +85,19 @@ public class MuseumDetailsViewModel : NotifyProperty
         SetImageCommand = new RelayCommand(() => SetImage(ImageBytes));
         OnChoseImageCommand = new RelayCommand(OnChoseImage);
         DeleteCommand = new RelayCommand(DeleteMuseum);
+    }
+
+    private void LoadData()
+    {
+        Title = _museum.Name;
+        Location = _museum.Location;
+        Description = _museum.Description ?? "Отсутствует";
+        StartTime = _museum.StartWorkingTime.ToString("t");
+        EndTime = _museum.EndWorkingTime.ToString("t");
+        Type = _museum.Type.TypeName;
+        Price = _museum.Price?.ToString() ?? "Не указана";
+        PreviewImage = _museum.ImageMediaId.HasValue ?
+            ImageService.GetImageById(_museum.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
     }
     
     private void OnOpenExhibitDetails(object? param)
@@ -175,14 +178,9 @@ public class MuseumDetailsViewModel : NotifyProperty
     {
         try
         {
-            if (!InputValidator.ValidateNewMuseum(Title, Location, decimal.Parse(Price), null))
+            if (!InputValidator.ValidateNewMuseum(Title, Location, decimal.Parse(Price),
+                    null, EditStartTime, EditEndTime))
                 return;
-
-            if (EditStartTime == default || EditEndTime == default || EditStartTime > EditEndTime)
-            {
-                MessageService.ShowError("Неправильный ввод времени работы");
-                return;
-            }
             
             _museum.Name = Title;
             _museum.Location = Location;
@@ -214,10 +212,9 @@ public class MuseumDetailsViewModel : NotifyProperty
             MessageService.ShowSuccess("Изменения сохранены");
             MuseumUpdated?.Invoke(this, EventArgs.Empty);
             
+            LoadData();
+            
             IsInEditMode = false;
-
-            StartTime = _museum.StartWorkingTime.ToString();
-            EndTime = _museum.EndWorkingTime.ToString();
         }
         catch (Exception ex)
         {

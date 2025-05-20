@@ -13,4 +13,9 @@ public static class MessageService
     {
         MessageBox.Show(message, "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
     }
+
+    public static void ShowInfo(string message)
+    {
+        MessageBox.Show(message, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
 }

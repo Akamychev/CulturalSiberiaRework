@@ -180,7 +180,8 @@ public class AddNewMuseumViewModel : NotifyProperty
     {
         try
         {
-            if (!InputValidator.ValidateNewMuseum(TitleProperty, LocationProperty, PriceProperty, ArchitectsProperty))
+            if (!InputValidator.ValidateNewMuseum(TitleProperty, LocationProperty, PriceProperty, ArchitectsProperty,
+                    StartTime, EndTime))
                 return;
 
             if (TypeId < 0)

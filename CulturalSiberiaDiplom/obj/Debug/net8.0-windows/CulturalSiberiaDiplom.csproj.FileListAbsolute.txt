@@ -213,3 +213,9 @@ C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Deb
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\MuseumDetailsWindow.baml
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\ExhibitDetailsWindow.g.cs
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\DetailsWindows\ExhibitDetailsWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\Castle.Core.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\Moq.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.abstractions.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.assert.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.core.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.execution.dotnet.dll

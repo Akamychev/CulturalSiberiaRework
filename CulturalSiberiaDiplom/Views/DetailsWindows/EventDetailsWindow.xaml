@@ -125,7 +125,7 @@
                                     <Setter Property="ContentTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <toolkit:DateTimePicker Text="{Binding DataContext.EditStartDate,
+                                                <toolkit:DateTimePicker Value="{Binding DataContext.EditStartDate,
                                                  RelativeSource={RelativeSource AncestorType=Window}}"
                                                                         Format="Custom"
                                                                         FormatString="dd.MM.yyyy HH:mm"
@@ -168,7 +168,7 @@
                                     <Setter Property="ContentTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <toolkit:DateTimePicker Text="{Binding DataContext.EditEndDate,
+                                                <toolkit:DateTimePicker Value="{Binding DataContext.EditEndDate,
                                                  RelativeSource={RelativeSource AncestorType=Window}}"
                                                                         Format="Custom"
                                                                         FormatString="dd.MM.yyyy HH:mm"
@@ -205,6 +205,7 @@
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=Worker}"/>
                 <Button Content="Купить билет" Width="120" Height="35"
+                        Command="{Binding OnBuyTicketCommand}"
                         Visibility="{Binding CurrentUser.Position.PositionName,
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=User}"/>

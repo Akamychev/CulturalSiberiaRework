@@ -172,7 +172,7 @@
             <TextBlock Text="Дата начала:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
                        Margin="0, 10, 100, 0"/>
             <toolkit:DateTimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
-                     Text="{Binding StartDate}"
+                     Value="{Binding StartDate}"
                      Background="{StaticResource LightBlackBrush}"
                      Foreground="{StaticResource AliceBlueBrush}"
                      Format="Custom" FormatString="dd.MM.yyyy HH:mm"/>
@@ -180,10 +180,12 @@
             <TextBlock Text="Дата конца:*" FontSize="15" Width="250" Height="25" TextAlignment="Left"
                        Margin="0, 10, 100, 0"/>
             <toolkit:DateTimePicker Margin="0, 10, 100, 0" Width="250" Height="25" 
+                     Value="{Binding EndDate}"
                      Text="{Binding EndDate}"
                      Background="{StaticResource LightBlackBrush}"
                      Foreground="{StaticResource AliceBlueBrush}"
-                     Format="Custom" FormatString="dd.MM.yyyy HH:mm"/>
+                     Format="Custom" FormatString="dd.MM.yyyy HH:mm"
+                     Kind="Local"/>
             
             <TextBlock Text="Место проведения:" FontSize="15" Width="250" Height="25" TextAlignment="Left"
                        Margin="0, 10, 100, 0"/>

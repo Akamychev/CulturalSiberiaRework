@@ -11,7 +11,7 @@ namespace CulturalSiberiaDiplom.ViewModels;
 public class EventDetailsViewModel : NotifyProperty
 {
     private readonly CulturalSiberiaContext _context;
-    private readonly Event _event;
+    private Event _event;
     private readonly Window _window;
 
     public event EventHandler? EventDeleted;
@@ -72,6 +72,7 @@ public class EventDetailsViewModel : NotifyProperty
     public ICommand SetImageCommand { get; }
     public ICommand OnChoseImageCommand { get; }
     public ICommand DeleteCommand { get; }
+    public ICommand OnBuyTicketCommand { get; }
     
 
     public EventDetailsViewModel(Event @event, CulturalSiberiaContext context, User user, Window window)
@@ -80,49 +81,79 @@ public class EventDetailsViewModel : NotifyProperty
         _context = context;
         _event = @event;
         _window = window;
-        
-        EditStartDate = new DateTime(@event.StartDate.Year, @event.StartDate.Month, @event.StartDate.Day,
-            @event.StartDate.Hour, @event.StartDate.Minute, 0);
 
-        EditEndDate = new DateTime(@event.EndDate.Year, @event.EndDate.Month, @event.EndDate.Day,
-            @event.EndDate.Hour, @event.EndDate.Minute, 0);
-        
-        Title = @event.Title;
-        Location = @event.Location ?? "Неизвестно";
-        Description = @event.Description ?? "Отсутствует";
-        StartDate = @event.StartDate.ToString("dd.MM.yyyy HH:mm");
-        EndDate = @event.EndDate.ToString("dd.MM.yyyy HH:mm");
-        AvailableSeats = @event.Capacity?.ToString() ?? "Неизвестно";
-        Price = @event.Price?.ToString() ?? "Не указана";
-        PreviewImage = @event.ImageMediaId.HasValue ?
-            ImageService.GetImageById(@event.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
+        LoadData();
 
         ToggleEditModeOrSaveChangesCommand = new RelayCommand(OnToggleEditModeOrSaveChanges);
         SetImageCommand = new RelayCommand(() => SetImage(ImageBytes));
         OnChoseImageCommand = new RelayCommand(OnChoseImage);
         DeleteCommand = new RelayCommand(DeleteEvent);
+        OnBuyTicketCommand = new RelayCommand(BuyTicket);
     }
 
     private async void DeleteEvent()
     {
+        var result = MessageBox.Show($"Вы точно хотите удалить мероприятие \"{_event.Title}\"?",
+            "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            try
+            {
+                _event.StatusId = 4;
+
+                _context.Events.Update(_event);
+                await _context.SaveChangesAsync();
+
+                MessageService.ShowSuccess("Мероприятие удалено");
+
+                EventDeleted?.Invoke(this, EventArgs.Empty);
+
+                _window.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка при удалении мероприятия: " + ex.Message);
+
+                MessageService.ShowError("Ошибка при удалении мероприятия");
+            }
+        }
+        else
+            MessageService.ShowInfo("Удаление отменено");
+    }
+
+    private async void BuyTicket()
+    {
+        if (!InputValidator.ValidateAvailableSeats(AvailableSeats))
+            return;
+
         try
         {
-            _event.StatusId = 4;
+            var ticket = new Ticket
+            {
+                TicketTargetTypeId = 1,
+                TicketTargetId = _event.Id,
+                StatusId = 1,
+                UserId = _currentUser.Id,
+                PurchaseDate = DateTime.Now
+            };
 
+            _event.Capacity -= 1;
+
+            _context.Tickets.Add(ticket);
             _context.Events.Update(_event);
             await _context.SaveChangesAsync();
             
-            MessageService.ShowSuccess("Мероприятие удалено");
-
-            EventDeleted?.Invoke(this, EventArgs.Empty);
+            LoadData();
             
-            _window.Close();
+            MessageService.ShowSuccess("Билет успешно приобретен");
+            EventUpdated?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Ошибка при удалении мероприятия: " + ex.Message);
+            Console.WriteLine("Ошибка при покупке билета на мероприятие: " + ex.Message);
             
-            MessageService.ShowError("Ошибка при удалении мероприятия");
+            MessageService.ShowError("Ошибка при покупке билета, повторите операцию позже");
         }
     }
 
@@ -150,14 +181,9 @@ public class EventDetailsViewModel : NotifyProperty
     {
         try
         {
-            if (!InputValidator.ValidateNewEvent(Title, Location, decimal.Parse(Price), int.Parse(AvailableSeats)))
+            if (!InputValidator.ValidateNewEvent(Title, Location, decimal.Parse(Price),
+                    int.Parse(AvailableSeats), EditStartDate, EditEndDate))
                 return;
-
-            if (EditStartDate == default || EditEndDate == default || EditStartDate > EditEndDate)
-            {
-                MessageService.ShowError("Некорректный ввод даты");
-                return;
-            }
             
             _event.Title = Title;
             _event.Location = Location;
@@ -191,6 +217,8 @@ public class EventDetailsViewModel : NotifyProperty
             MessageService.ShowSuccess("Изменения сохранены");
             EventUpdated?.Invoke(this, EventArgs.Empty);
             
+            LoadData();
+            
             IsInEditMode = false;
         }
         catch (Exception ex)
@@ -208,5 +236,24 @@ public class EventDetailsViewModel : NotifyProperty
         ImageBytes = imageBytes;
         PreviewImage = ImageService.SetImage(imageBytes);
         OnPropertyChanged(nameof(PreviewImage));
+    }
+    
+    private void LoadData()
+    {
+        EditStartDate = new DateTime(_event.StartDate.Year, _event.StartDate.Month, _event.StartDate.Day,
+            _event.StartDate.Hour, _event.StartDate.Minute, 0);
+
+        EditEndDate = new DateTime(_event.EndDate.Year, _event.EndDate.Month, _event.EndDate.Day,
+            _event.EndDate.Hour, _event.EndDate.Minute, 0);
+        
+        Title = _event.Title;
+        Location = _event.Location ?? "Неизвестно";
+        Description = _event.Description ?? "Отсутствует";
+        StartDate = _event.StartDate.ToString("dd.MM.yyyy HH:mm");
+        EndDate = _event.EndDate.ToString("dd.MM.yyyy HH:mm");
+        AvailableSeats = _event.Capacity?.ToString() ?? "Неизвестно";
+        Price = _event.Price?.ToString() ?? "Не указана";
+        PreviewImage = _event.ImageMediaId.HasValue ?
+            ImageService.GetImageById(_event.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
     }
 }
