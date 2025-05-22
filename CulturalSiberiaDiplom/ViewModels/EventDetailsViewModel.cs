@@ -247,8 +247,8 @@ public class EventDetailsViewModel : NotifyProperty
             _event.EndDate.Hour, _event.EndDate.Minute, 0);
         
         Title = _event.Title;
-        Location = _event.Location ?? "Неизвестно";
-        Description = _event.Description ?? "Отсутствует";
+        Location = _event.Location ?? "Локация неизвестна";
+        Description = _event.Description ?? "Описание отсутствует";
         StartDate = _event.StartDate.ToString("dd.MM.yyyy HH:mm");
         EndDate = _event.EndDate.ToString("dd.MM.yyyy HH:mm");
         AvailableSeats = _event.Capacity?.ToString() ?? "Неизвестно";

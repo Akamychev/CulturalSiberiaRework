@@ -25,4 +25,11 @@ public partial class UserWorkerMainWindow : Window
         if (sender is ListBox listBox && DataContext is UserWorkerMainWindowViewModel vm)
             vm.OpenMuseumDetailsCommand.Execute(listBox.SelectedItem);
     }
+
+    private void UserProfile_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is UserWorkerMainWindowViewModel vm)
+            vm.UserMenuVisibility = vm.UserMenuVisibility == Visibility.Visible ? Visibility.Collapsed
+                : Visibility.Visible;
+    }
 }

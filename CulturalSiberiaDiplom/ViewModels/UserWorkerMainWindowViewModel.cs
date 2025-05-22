@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
@@ -198,9 +200,27 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             OnPropertyChanged(nameof(SelectedMuseum));
         }
     }
+    
+    private Visibility _userMenuVisibility = Visibility.Collapsed;
+    public Visibility UserMenuVisibility
+    {
+        get => _userMenuVisibility;
+        set
+        {
+            _userMenuVisibility = value;
+            OnPropertyChanged(nameof(UserMenuVisibility));
+        }
+    }
 
     private readonly User _currentUser;
     public User CurrentUser => _currentUser;
+
+    public string Username => _currentUser.Username;
+
+    public string UserBalance => "Баланс: " + _currentUser.Balance;
+    public BitmapSource AvatarImage => ImageService.GetImageById(_currentUser.AvatarMediaId ?? -1, _context);
+    
+    public bool IsInUserMenu { get; set; }
     
     public ICommand AddNewEventCommand { get; set; }
     public ICommand AddNewMuseumCommand { get; set; }
@@ -210,6 +230,10 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
     
     public ICommand OpenEventDetailsCommand { get; }
     public ICommand OpenMuseumDetailsCommand { get; }
+    
+    public ICommand BalanceCommand { get; }
+    public ICommand ProfileCommand { get; }
+    public ICommand LogoutCommand { get; }
     
     public UserWorkerMainWindowViewModel(User user, CulturalSiberiaContext context)
     {
@@ -245,17 +269,10 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
 
         OpenEventDetailsCommand = new RelayCommand(() => OnOpenEventDetails(SelectedEvent));
         OpenMuseumDetailsCommand = new RelayCommand(() => OnOpenMuseumDetails(SelectedMuseum));
-    }
-
-    private void LoadData()
-    {
-        _allMuseums = LoadDataFromDb.LoadMuseums();
-        _allEvents = LoadDataFromDb.LoadEvents();
-        _allUpcomingEvents = LoadDataFromDb.LoadUpcomingEvents();
         
-        Museums = new ObservableCollection<Museum>(_allMuseums);
-        Events = new ObservableCollection<Event>(_allEvents);
-        UpcomingEvents = new ObservableCollection<Event>(_allUpcomingEvents);
+        BalanceCommand = new RelayCommand(OnBalance);
+        ProfileCommand = new RelayCommand(OnProfile);
+        LogoutCommand = new RelayCommand(OnLogout);
     }
 
     private void PerformSearch()
@@ -346,6 +363,35 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             else
                 MessageService.ShowError("Не удалось загрузить информацию о музее");
         }
+    }
+    
+    private void LoadData()
+    {
+        _allMuseums = LoadDataFromDb.LoadMuseums();
+        _allEvents = LoadDataFromDb.LoadEvents();
+        _allUpcomingEvents = LoadDataFromDb.LoadUpcomingEvents();
+        
+        Museums = new ObservableCollection<Museum>(_allMuseums);
+        Events = new ObservableCollection<Event>(_allEvents);
+        UpcomingEvents = new ObservableCollection<Event>(_allUpcomingEvents);
+    }
+
+    private void OnBalance()
+    {
+        Console.WriteLine("Функция баланса");
+        UserMenuVisibility = Visibility.Collapsed;
+    }
+
+    private void OnProfile()
+    {
+        Console.WriteLine("Функция профиля");
+        UserMenuVisibility = Visibility.Collapsed;
+    }
+
+    private void OnLogout()
+    {
+        Services.CurrentUser.SelectedUser = null;
+        OpenNewWindowAndCloseCurrent.OpenWindow(new AuthorizationWindow());
     }
 
     private async Task AllEventsReportAsync()

@@ -106,6 +106,22 @@
             </Setter>
         </Style>
         <local:RoleToVisibilityConverter x:Key="RoleToVisibilityConverter"/>
+        
+        <Style TargetType="ContextMenu" x:Key="MinimalContextMenuStyle">
+            <Setter Property="Background" Value="#303030"/>
+            <Setter Property="BorderBrush" Value="#888"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="Separator" x:Key="MinimalSeparatorStyle">
+            <Setter Property="Background" Value="#666"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="0,2,0,2"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -390,9 +406,76 @@
             </TabControl>
 
             <!-- Пользователь -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                <Ellipse Width="30" Height="30" Fill="Gray" Margin="0,0,5,0"/>
-                <TextBlock Text="Иванов И.И." FontSize="16"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" MouseDown="UserProfile_OnMouseDown"> 
+                <Image Source="{Binding AvatarImage}" Width="40" Height="40" Stretch="UniformToFill">
+                    <Image.Clip>
+                        <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
+                    </Image.Clip>
+                </Image>
+                <TextBlock Text="{Binding Username}" FontSize="16"/>
+                
+                <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="5">
+                    <StackPanel Orientation="Vertical" Visibility="{Binding DataContext.UserMenuVisibility,
+                     RelativeSource={RelativeSource AncestorType=StackPanel}}">
+                        <Button Content="{Binding UserBalance}" Width="100" Height="25"
+                                Visibility="{Binding CurrentUser.Position.PositionName,
+                                Converter={StaticResource RoleToVisibilityConverter},
+                                ConverterParameter=User}"
+                                Command="{Binding BalanceCommand}"/>
+                        <Separator Visibility="{Binding CurrentUser.Position.PositionName,
+                                Converter={StaticResource RoleToVisibilityConverter},
+                                ConverterParameter=User}"
+                                   Background="Transparent"/>
+                        <Button Content="Личный кабинет" Width="100" Height="25" 
+                                Visibility="{Binding CurrentUser.Position.PositionName,
+                                Converter={StaticResource RoleToVisibilityConverter},
+                                ConverterParameter=User}"
+                                Command="{Binding ProfileCommand}"/>
+                        <Separator Visibility="{Binding CurrentUser.Position.PositionName,
+                                Converter={StaticResource RoleToVisibilityConverter},
+                                ConverterParameter=User}"
+                                   Background="Transparent"/>
+                        <Button Content="Выход" Background="#5F75E2" Width="100" Height="25"
+                                Command="{Binding LogoutCommand}"/>
+                    </StackPanel>
+                </Border>
+                        
+                <!-- <StackPanel.ContextMenu> -->
+                <!--     <ContextMenu Style="{StaticResource MinimalContextMenuStyle}"> -->
+                <!--         <MenuItem Header="Баланс" -->
+                <!--                   Command="{Binding BalanceCommand}" -->
+                <!--                   Background="{StaticResource LightBlackBrush}" -->
+                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
+                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
+                <!--                   Padding="10,5"> -->
+                <!--             <MenuItem.Icon> -->
+                <!--                 <Image Source="pack://application:,,,/Resources/Images/balance_icon.png"/> -->
+                <!--             </MenuItem.Icon> -->
+                <!--         </MenuItem> -->
+                <!-- -->
+                <!--         <MenuItem Header="Личный кабинет" -->
+                <!--                   Command="{Binding ProfileCommand}" -->
+                <!--                   Background="{StaticResource LightBlackBrush}" -->
+                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
+                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
+                <!--                   Padding="10,5"> -->
+                <!--             <MenuItem.Icon> -->
+                <!--                 <Image Source="pack://application:,,,/Resources/Images/cabinet_icon.png"/> -->
+                <!--             </MenuItem.Icon> -->
+                <!--         </MenuItem> -->
+                <!-- -->
+                <!--         <MenuItem Header="Выход" -->
+                <!--                   Command="{Binding LogoutCommand}" -->
+                <!--                   Background="#5F75E2" -->
+                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
+                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
+                <!--                   Padding="10,5"> -->
+                <!--             <MenuItem.Icon> -->
+                <!--                 <Image Source="pack://application:,,,/Resources/Images/exit_icon.png"/> -->
+                <!--             </MenuItem.Icon> -->
+                <!--         </MenuItem> -->
+                <!--     </ContextMenu> -->
+                <!-- </StackPanel.ContextMenu> -->
             </StackPanel>
         </StackPanel>
     </Grid>
