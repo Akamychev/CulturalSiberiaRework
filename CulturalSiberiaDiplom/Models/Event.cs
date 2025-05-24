@@ -43,6 +43,8 @@ public partial class Event
 
     public virtual Eventsstatus? Status { get; set; }
 
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
     public virtual Eventstype Type { get; set; } = null!;
 
     public virtual User? UpdatedByNavigation { get; set; }

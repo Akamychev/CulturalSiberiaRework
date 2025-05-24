@@ -207,6 +207,7 @@
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=Worker}"/>
                 <Button Content="Купить билет" Width="120" Height="35"
+                        Command="{Binding OnBuyTicketCommand}"
                         Visibility="{Binding CurrentUser.Position.PositionName,
                         Converter={StaticResource RoleToVisibilityConverter},
                         ConverterParameter=User}"/>

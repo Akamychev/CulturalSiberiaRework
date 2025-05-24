@@ -6,9 +6,9 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:services="clr-namespace:CulturalSiberiaDiplom.Services"
         Title="Авторизация"
-        Width="400" Height="350"
-        MinWidth="400" MinHeight="350"
-        MaxWidth="400" MaxHeight="350"
+        Width="400" Height="400"
+        MinWidth="400" MinHeight="400"
+        MaxWidth="400" MaxHeight="400"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Background="#202020">
@@ -25,6 +25,13 @@
             <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
             <Setter Property="Background" Value="{StaticResource LightBlackBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource LightBlackBrush}"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextBlocksStyle">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
         </Style>
         <Style TargetType="PasswordBox">
             <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
@@ -48,22 +55,18 @@
     </Window.Resources>
     
     <Grid>
-        <Button Name="TransitionToRegistrationWindowButton" Content="Зарегистрироваться" HorizontalAlignment="Right" 
-                VerticalAlignment="Top" Margin="10" Width="150" Height="35" 
-                Command="{Binding GoToRegistrationCommand}"/>
-        
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Авторизация" Margin="0, 30, 0, 10" FontSize="25" Width="150" Height="33" 
                        TextAlignment="Center"/>
             
             <TextBlock Text="Логин:" FontSize="15" Width="150" Height="25" TextAlignment="Left"/>        
-            <TextBox Name="AuthorizationLoginBox" Text="{Binding LoginProperty, 
+            <TextBox Text="{Binding LoginProperty, 
                      UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"
                      Margin="0, 10, 0, 0" Width="150" Height="25"/>
             
             <TextBlock Text="Пароль:" FontSize="15" Width="150" Height="25" Margin="0, 10, 0,0" 
                        TextAlignment="Left"/>
-            <PasswordBox Name="AuthorizationPasswordBox" PasswordChar="*" VerticalContentAlignment="Center"
+            <PasswordBox PasswordChar="*" VerticalContentAlignment="Center"
                      Margin="0, 10, 0, 0" Width="150" Height="25">
                 <b:Interaction.Behaviors>
                     <services:PasswordBoxBehavior Password="{Binding PasswordProperty,
@@ -71,8 +74,17 @@
                 </b:Interaction.Behaviors>
             </PasswordBox>
             
-            <Button Name="AuthorizationButton" Content="Авторизироваться" Margin="0, 30, 0, 0" 
+            <Button Content="Авторизироваться" Margin="0, 30, 0, 0" 
                     Width="150" Height="35" Command="{Binding AuthorizationCommand}"/>
+            
+            <TextBox Text="Нет аккаунта?" Style="{StaticResource TextBlocksStyle}" 
+                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0" FontSize="14"/>
+            <TextBox Text="Пройдите регистрацию ⬇" Style="{StaticResource TextBlocksStyle}" 
+                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14"/>
+            
+            <Button Content="Зарегистрироваться" HorizontalAlignment="Right" 
+                    VerticalAlignment="Top" Margin="10" Width="150" Height="35" 
+                    Command="{Binding GoToRegistrationCommand}"/>
         </StackPanel>
     </Grid>
 </Window>

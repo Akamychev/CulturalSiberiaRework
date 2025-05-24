@@ -8,7 +8,7 @@ public partial class App
 {
     public App()
     {
-        var view = new AuthorizationWindow
+        var view = new AuthorizationWindow()
         {
             DataContext = Activator.CreateInstance<AuthorizationViewModel>()
         };

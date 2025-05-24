@@ -115,7 +115,8 @@ public class AuthorizationViewModel : NotifyProperty
 
     private void GoToRegistration()
     {
-        NavigateTo(new RegistrationWindow());
+        var window = new RegistrationWindow();
+        window.ShowDialog();
     }
 
     private void NavigateTo(Window window)

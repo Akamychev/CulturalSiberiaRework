@@ -68,6 +68,7 @@ public class MuseumDetailsViewModel : NotifyProperty
     public ICommand SetImageCommand { get; }
     public ICommand OnChoseImageCommand { get; }
     public ICommand DeleteCommand { get; }
+    public ICommand OnBuyTicketCommand { get; }
     
 
     public MuseumDetailsViewModel(Museum museum, CulturalSiberiaContext context, User user, Window window)
@@ -85,6 +86,7 @@ public class MuseumDetailsViewModel : NotifyProperty
         SetImageCommand = new RelayCommand(() => SetImage(ImageBytes));
         OnChoseImageCommand = new RelayCommand(OnChoseImage);
         DeleteCommand = new RelayCommand(DeleteMuseum);
+        OnBuyTicketCommand = new RelayCommand(BuyTicket);
     }
 
     private void LoadData()
@@ -129,6 +131,22 @@ public class MuseumDetailsViewModel : NotifyProperty
         }
         else
             MessageService.ShowError("Не удалось открыть экспонат");
+    }
+
+    private void BuyTicket()
+    {
+        try
+        {
+            UserBuyTicket.BuyTicket(_currentUser, null, _museum);
+            
+            MessageService.ShowSuccess("Билет успешно приобретен");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при покупке билета в музей: {_museum.Id} " + "Сообщение ошибки: " + ex.Message);
+            
+            MessageService.ShowError("Ошибка при покупке билета, повторите попытку позже");
+        }
     }
     
     private async void DeleteMuseum()

@@ -458,6 +458,8 @@ public partial class CulturalSiberiaContext : DbContext
             entity.ToTable("tickets", "Part1");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EventId).HasColumnName("event_id");
+            entity.Property(e => e.MuseumId).HasColumnName("museum_id");
             entity.Property(e => e.PurchaseDate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("purchase_date");
@@ -465,6 +467,14 @@ public partial class CulturalSiberiaContext : DbContext
             entity.Property(e => e.TicketTargetId).HasColumnName("ticket_target_id");
             entity.Property(e => e.TicketTargetTypeId).HasColumnName("ticket_target_type_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Event).WithMany(p => p.Tickets)
+                .HasForeignKey(d => d.EventId)
+                .HasConstraintName("tickets_event_id_fkey");
+
+            entity.HasOne(d => d.Museum).WithMany(p => p.Tickets)
+                .HasForeignKey(d => d.MuseumId)
+                .HasConstraintName("tickets_museum_id_fkey");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.StatusId)

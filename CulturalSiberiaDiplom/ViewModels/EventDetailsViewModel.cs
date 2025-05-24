@@ -129,18 +129,10 @@ public class EventDetailsViewModel : NotifyProperty
 
         try
         {
-            var ticket = new Ticket
-            {
-                TicketTargetTypeId = 1,
-                TicketTargetId = _event.Id,
-                StatusId = 1,
-                UserId = _currentUser.Id,
-                PurchaseDate = DateTime.Now
-            };
+            UserBuyTicket.BuyTicket(_currentUser, _event, null);
 
             _event.Capacity -= 1;
-
-            _context.Tickets.Add(ticket);
+            
             _context.Events.Update(_event);
             await _context.SaveChangesAsync();
             

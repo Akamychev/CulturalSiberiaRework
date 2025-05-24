@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using CulturalSiberiaDiplom.Models;
+using CulturalSiberiaDiplom.ViewModels;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
@@ -70,10 +72,9 @@ public static class Reports
         {
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                Console.WriteLine($"Ошибка генерации отчета мероприятий: {ex}");
+                Console.WriteLine($"Ошибка генерации отчета мероприятий: {ex.Message}");
                 
-                MessageBox.Show("Ошибка генерации отчета",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageService.ShowError("Ошибка генерации отчета, повторите попытку позже");
             });
         }
     }
@@ -132,14 +133,67 @@ public static class Reports
         {
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                Console.WriteLine($"Ошибка генерации отчета музеев: {ex}");
+                Console.WriteLine($"Ошибка генерации отчета музеев: {ex.Message}");
                 
-                MessageBox.Show("Ошибка генерации отчета",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageService.ShowError("Ошибка генерации отчета, повторите попытку позже");
             });
         }
     }
     
+    public static async Task GenerateBuyHistoryAndActiveTicketsPdfReportAsync(ObservableCollection<TicketHistoryItemDto> tickets, string filePath)
+    {
+        try
+        {
+            await Task.Run(() =>
+            {
+                if (string.IsNullOrWhiteSpace(filePath))
+                {
+                    MessageBox.Show("Сохранение отменено",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                string dest = filePath;
+                PdfWriter writer = new PdfWriter(dest);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf);
+
+                Table table = new Table(4);
+                table.AddHeaderCell("Тип");
+                table.AddHeaderCell("Наименование");
+                table.AddHeaderCell("Цена");
+                table.AddHeaderCell("Дата приобретения");
+
+                foreach (var ticket in tickets)
+                {
+                    table.AddCell(ticket.Type);
+                    table.AddCell(ticket.TargetName);
+                    table.AddCell(ticket.Price.ToString());
+                    table.AddCell(ticket.PurchaseDate.ToString());
+                }
+
+                var font = EmbeddedFontService.GetFont("pt-astra-serif_regular.ttf");
+
+                document.SetFont(font);
+                document.Add(table);
+                document.Close();
+            });
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+            });
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Console.WriteLine($"Ошибка генерации отчета истории покупок: {ex.Message}");
+                
+                MessageService.ShowError("Ошибка генерации отчета, повторите попытку позже");
+            });
+        }
+    }
 
     public static string? GetSaveFilePath(string defaultExtension, string filter)
     {

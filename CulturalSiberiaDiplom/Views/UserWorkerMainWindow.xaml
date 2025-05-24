@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Services"
         mc:Ignorable="d"
         Title="Главное меню"
-        Height="600" Width="800"
-        MinHeight="600" MinWidth="800"
-        MaxHeight="600" MaxWidth="800"
+        Height="400" Width="750"
+        MinHeight="250" MinWidth="750"
+        MaxHeight="900" MaxWidth="750"
         WindowStartupLocation="CenterScreen"
         Background="#202020">
     <Window.Resources>
-        <!-- Существующие стили -->
         <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
         <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
         <SolidColorBrush x:Key="TurquoiseBrush" Color="#F0F8FF"/>
@@ -79,8 +78,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!-- Стиль для TabItem -->
+        <Style TargetType="TextBox" x:Key="TextBlocksStyle">
+            <Setter Property="Foreground" Value="{StaticResource AliceBlueBrush}"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
         <Style TargetType="TabItem">
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
@@ -106,61 +111,39 @@
             </Setter>
         </Style>
         <local:RoleToVisibilityConverter x:Key="RoleToVisibilityConverter"/>
-        
-        <Style TargetType="ContextMenu" x:Key="MinimalContextMenuStyle">
-            <Setter Property="Background" Value="#303030"/>
-            <Setter Property="BorderBrush" Value="#888"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style TargetType="Separator" x:Key="MinimalSeparatorStyle">
-            <Setter Property="Background" Value="#666"/>
-            <Setter Property="Height" Value="1"/>
-            <Setter Property="Margin" Value="0,2,0,2"/>
-        </Style>
     </Window.Resources>
 
     <Grid>
-        <!-- Верхняя панель с табами и пользователем -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Табы -->
-            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <!-- Табы -->
+        
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,0">
-            <TabControl Name="MainTabControl" Background="#202020">
+            <TabControl Name="MainTabControl" Background="#202020" BorderBrush="Transparent">
                 <TabItem Header="Ближайшие мероприятия" Visibility="{Binding CurrentUser.Position.PositionName,
                                     Converter={StaticResource RoleToVisibilityConverter},
                                     ConverterParameter=User}">
                     <Grid Background="#202020" Margin="0,10,0,0">
-                        <!-- Верхняя панель с поиском -->
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Поиск -->
-                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-
-                        <!-- Поиск -->
+                        
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
-                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200" Height="20"
                                      Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="0,0,10,0"/>
                         </StackPanel>
-
-                        <!-- Основное содержимое -->
+                        
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
-                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                                <ColumnDefinition Width="*" MinWidth="400"/>
+                                <ColumnDefinition Width="200"/>
                             </Grid.ColumnDefinitions>
-
-                            <!-- Список событий -->
+                            
                             <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
-                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource AliceBlueBrush}"
                                         Margin="10,10,10,10">
                                     <ListBox ItemsSource="{Binding UpcomingEvents}" 
                                              SelectedItem="{Binding SelectedEvent}"
@@ -177,12 +160,11 @@
                                     </ListBox>
                                 </Border>
                             </ScrollViewer>
-
-                            <!-- Фильтры -->
+                            
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                                <!-- Стоимость -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}"
+                                               Margin="0,0,10,0"/>
                                 </StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -198,10 +180,10 @@
                                              Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
                                              Margin="5,0,0,0"/>
                                 </Grid>
-
-                                <!-- Дата -->
+                                    
                                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Начало" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="15,0,45,10"/>
+                                    <TextBlock Text="Конец" FontSize="16" Foreground="{StaticResource TurquoiseBrush}"/>
                                 </StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -217,19 +199,16 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-
-                <!-- Все мероприятия -->
+                
                 <TabItem Header="Все мероприятия">
                     <Grid Background="#202020">
-                        <!-- Верхняя панель с поиском -->
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Поиск -->
-                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/> 
                         </Grid.RowDefinitions>
-
-                        <!-- Поиск -->
+                        
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
-                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200" Height="20"
                                      Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="0,0,10,0"/>
                             <Button Content="Добавить мероприятие" Width="150" Height="35"
@@ -243,17 +222,15 @@
                                     Converter={StaticResource RoleToVisibilityConverter},
                                     ConverterParameter=Worker}" Margin="15, 0, 0, 0"/>
                         </StackPanel>
-
-                        <!-- Основное содержимое -->
+                        
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
-                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                                <ColumnDefinition Width="*" MinWidth="400"/>
+                                <ColumnDefinition Width="200"/>
                             </Grid.ColumnDefinitions>
-
-                            <!-- Список событий -->
+                            
                             <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
-                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource AliceBlueBrush}"
                                         Margin="10,10,10,10">
                                     <ListBox ItemsSource="{Binding Events}" 
                                              SelectedItem="{Binding SelectedEvent}"
@@ -270,10 +247,8 @@
                                     </ListBox>
                                 </Border>
                             </ScrollViewer>
-
-                            <!-- Фильтры -->
+                            
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                                <!-- Стоимость -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
                                 </StackPanel>
@@ -291,10 +266,10 @@
                                              Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
                                              Margin="5,0,0,0"/>
                                 </Grid>
-
-                                <!-- Дата -->
+                                    
                                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Начало" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="15,0,45,10"/>
+                                    <TextBlock Text="Конец" FontSize="16" Foreground="{StaticResource TurquoiseBrush}"/>
                                 </StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -310,19 +285,16 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-
-                <!-- Музеи -->
+                
                 <TabItem Header="Музеи">
                     <Grid Background="#202020">
-                        <!-- Верхняя панель с поиском -->
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Поиск -->
-                            <RowDefinition Height="*"/>   <!-- Основное содержимое -->
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-
-                        <!-- Поиск -->
+                        
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
-                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200"
+                            <TextBox Style="{StaticResource placeHolder}" Tag="Поиск..." Width="200" Height="20"
                                      Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="0,0,10,0"/>
                             <Button Content="Добавить музей" Width="150" Height="35"
@@ -336,17 +308,15 @@
                                     Converter={StaticResource RoleToVisibilityConverter},
                                     ConverterParameter=Worker}" Margin="15, 0, 0, 0"/>
                         </StackPanel>
-
-                        <!-- Основное содержимое -->
+                        
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" MinWidth="400"/> <!-- Список событий -->
-                                <ColumnDefinition Width="200"/> <!-- Фильтры -->
+                                <ColumnDefinition Width="*" MinWidth="400"/> 
+                                <ColumnDefinition Width="200"/> 
                             </Grid.ColumnDefinitions>
-
-                            <!-- Список событий -->
+                            
                             <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="400">
-                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource LightBlackBrush}"
+                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource AliceBlueBrush}"
                                         Margin="10,10,10,10">
                                     <ListBox ItemsSource="{Binding Museums}" 
                                              SelectedItem="{Binding SelectedMuseum}"
@@ -363,10 +333,8 @@
                                     </ListBox>
                                 </Border>
                             </ScrollViewer>
-
-                            <!-- Фильтры -->
+                            
                             <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                                <!-- Стоимость -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <TextBlock Text="Стоимость" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
                                 </StackPanel>
@@ -384,10 +352,10 @@
                                              Text="{Binding MaxPrice, UpdateSourceTrigger=PropertyChanged}"
                                              Margin="5,0,0,0"/>
                                 </Grid>
-
-                                <!-- Дата -->
+                                
                                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                                    <TextBlock Text="Дата" FontSize="16" Foreground="{StaticResource TurquoiseBrush}" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Открывается" FontSize="14" Foreground="{StaticResource TurquoiseBrush}" Margin="5,0,10,10"/>
+                                    <TextBlock Text="Закрывается" FontSize="14" Foreground="{StaticResource TurquoiseBrush}"/>
                                 </StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -404,15 +372,16 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-
-            <!-- Пользователь -->
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" MouseDown="UserProfile_OnMouseDown"> 
-                <Image Source="{Binding AvatarImage}" Width="40" Height="40" Stretch="UniformToFill">
+            
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" 
+                        MouseDown="UserProfile_OnMouseDown"> 
+                <Image Source="{Binding AvatarImage}" Width="40" Height="40" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image.Clip>
                         <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"/>
                     </Image.Clip>
                 </Image>
-                <TextBlock Text="{Binding Username}" FontSize="16"/>
+                <TextBox Text="{Binding Username, Mode=OneWay}" FontSize="16" Style="{StaticResource TextBlocksStyle}"
+                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 
                 <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="5">
                     <StackPanel Orientation="Vertical" Visibility="{Binding DataContext.UserMenuVisibility,
@@ -439,44 +408,8 @@
                                 Command="{Binding LogoutCommand}"/>
                     </StackPanel>
                 </Border>
-                        
-                <!-- <StackPanel.ContextMenu> -->
-                <!--     <ContextMenu Style="{StaticResource MinimalContextMenuStyle}"> -->
-                <!--         <MenuItem Header="Баланс" -->
-                <!--                   Command="{Binding BalanceCommand}" -->
-                <!--                   Background="{StaticResource LightBlackBrush}" -->
-                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
-                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
-                <!--                   Padding="10,5"> -->
-                <!--             <MenuItem.Icon> -->
-                <!--                 <Image Source="pack://application:,,,/Resources/Images/balance_icon.png"/> -->
-                <!--             </MenuItem.Icon> -->
-                <!--         </MenuItem> -->
-                <!-- -->
-                <!--         <MenuItem Header="Личный кабинет" -->
-                <!--                   Command="{Binding ProfileCommand}" -->
-                <!--                   Background="{StaticResource LightBlackBrush}" -->
-                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
-                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
-                <!--                   Padding="10,5"> -->
-                <!--             <MenuItem.Icon> -->
-                <!--                 <Image Source="pack://application:,,,/Resources/Images/cabinet_icon.png"/> -->
-                <!--             </MenuItem.Icon> -->
-                <!--         </MenuItem> -->
-                <!-- -->
-                <!--         <MenuItem Header="Выход" -->
-                <!--                   Command="{Binding LogoutCommand}" -->
-                <!--                   Background="#5F75E2" -->
-                <!--                   Foreground="{StaticResource AliceBlueBrush}" -->
-                <!--                   BorderBrush="{StaticResource LightBlackBrush}" -->
-                <!--                   Padding="10,5"> -->
-                <!--             <MenuItem.Icon> -->
-                <!--                 <Image Source="pack://application:,,,/Resources/Images/exit_icon.png"/> -->
-                <!--             </MenuItem.Icon> -->
-                <!--         </MenuItem> -->
-                <!--     </ContextMenu> -->
-                <!-- </StackPanel.ContextMenu> -->
             </StackPanel>
+            
         </StackPanel>
     </Grid>
 </Window>

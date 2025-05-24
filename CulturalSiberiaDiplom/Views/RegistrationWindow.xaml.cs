@@ -8,6 +8,6 @@ public partial class RegistrationWindow : Window
     public RegistrationWindow()
     {
         InitializeComponent();
-        DataContext = new RegistrationViewModel();
+        DataContext = new RegistrationViewModel(this);
     }
 }

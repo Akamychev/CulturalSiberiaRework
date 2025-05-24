@@ -219,3 +219,11 @@ C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Deb
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.assert.dll
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.core.dll
 C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\bin\Debug\net8.0-windows\xunit.execution.dotnet.dll
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\BuyHistoryWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\EditUserDataWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\UserActiveTicketsWindow.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\UserMenuViews\PersonalCabinet.g.cs
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\BuyHistoryWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\EditUserDataWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\PersonalCabinetOperations\UserActiveTicketsWindow.baml
+C:\Users\Akame\RiderProjects\CulturalSiberiaDiplom\CulturalSiberiaDiplom\obj\Debug\net8.0-windows\Views\UserMenuViews\PersonalCabinet.baml

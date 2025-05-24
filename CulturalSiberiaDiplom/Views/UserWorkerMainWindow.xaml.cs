@@ -11,7 +11,7 @@ public partial class UserWorkerMainWindow : Window
     public UserWorkerMainWindow()
     {
         InitializeComponent();
-        DataContext = new UserWorkerMainWindowViewModel(CurrentUser.SelectedUser, Service.GetDbContext());
+        DataContext = new UserWorkerMainWindowViewModel(Service.GetDbContext(), CurrentUser.SelectedUser);
     }
 
     private void Events_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

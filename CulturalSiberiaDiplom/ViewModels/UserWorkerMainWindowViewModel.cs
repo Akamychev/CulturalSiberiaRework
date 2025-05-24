@@ -10,6 +10,7 @@ using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
 using CulturalSiberiaDiplom.Views;
 using CulturalSiberiaDiplom.Views.DetailsWindows;
+using CulturalSiberiaDiplom.Views.UserMenuViews;
 using CulturalSiberiaDiplom.Views.WorkerOperationsWithEvents;
 using CulturalSiberiaDiplom.Views.WorkerOperationsWithMuseums;
 using Microsoft.EntityFrameworkCore;
@@ -234,8 +235,9 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
     public ICommand BalanceCommand { get; }
     public ICommand ProfileCommand { get; }
     public ICommand LogoutCommand { get; }
-    
-    public UserWorkerMainWindowViewModel(User user, CulturalSiberiaContext context)
+    public ICommand GoToAuthCommand { get; }
+
+    public UserWorkerMainWindowViewModel(CulturalSiberiaContext context, User user)
     {
         _currentUser = user;
         _context = context;
@@ -272,7 +274,8 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
         
         BalanceCommand = new RelayCommand(OnBalance);
         ProfileCommand = new RelayCommand(OnProfile);
-        LogoutCommand = new RelayCommand(OnLogout);
+        LogoutCommand = new RelayCommand(LogoutUser.OnLogout);
+        GoToAuthCommand = new RelayCommand(() => OpenNewWindowAndCloseCurrent.OpenWindow(new AuthorizationWindow()));
     }
 
     private void PerformSearch()
@@ -378,20 +381,14 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
 
     private void OnBalance()
     {
-        Console.WriteLine("Функция баланса");
         UserMenuVisibility = Visibility.Collapsed;
+        Console.WriteLine("Функция баланса");
     }
 
     private void OnProfile()
     {
-        Console.WriteLine("Функция профиля");
         UserMenuVisibility = Visibility.Collapsed;
-    }
-
-    private void OnLogout()
-    {
-        Services.CurrentUser.SelectedUser = null;
-        OpenNewWindowAndCloseCurrent.OpenWindow(new AuthorizationWindow());
+        OpenNewWindowAndCloseCurrent.OpenWindow(new PersonalCabinet(_context, _currentUser));
     }
 
     private async Task AllEventsReportAsync()

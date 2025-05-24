@@ -37,6 +37,8 @@ public partial class Museum
 
     public virtual Museumstatus Status { get; set; } = null!;
 
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
     public virtual Museumtype Type { get; set; } = null!;
 
     public virtual User? UpdatedByNavigation { get; set; }

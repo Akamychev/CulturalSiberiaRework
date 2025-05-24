@@ -12,6 +12,8 @@ namespace CulturalSiberiaDiplom.ViewModels;
 
 public class RegistrationViewModel : NotifyProperty
 {
+    private Window _window;
+    
     private string? _fNameProperty;
     public string? FNameProperty
     {
@@ -92,8 +94,10 @@ public class RegistrationViewModel : NotifyProperty
     
     public ICommand RegistrationCommandButton { get; set; }
 
-    public RegistrationViewModel()
+    public RegistrationViewModel(Window window)
     {
+        _window = window;
+        
         RegistrationCommandButton = new RelayCommand(RegisterUser);
     }
 
@@ -103,6 +107,7 @@ public class RegistrationViewModel : NotifyProperty
             return;
         
         AddNewUser();
+        _window.Close();
     }
 
     private bool ValidateInput()

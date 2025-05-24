@@ -163,6 +163,22 @@ public static class InputValidator
         return true;
     }
 
+    public static bool ValidatePhoneNumbers(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+        {
+            return true;
+        }
+
+        if (!Regex.IsMatch(phone, @"^\+7\d{11}$"))
+        {
+            MessageService.ShowError("Неверный формат ввода телефона. Формат ввода: +7XXXXXXXXXX");
+            return false;
+        }
+        
+        return true;
+    }
+    
     public static bool ValidateNewEvent(string title, string? location, decimal? price, int? capacity, DateTime startDate, DateTime endDate)
     {
         if (!ValidateLocation(location)) return false;
