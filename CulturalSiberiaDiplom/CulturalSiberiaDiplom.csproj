@@ -46,6 +46,8 @@
       <Resource Include="Resources\Images\cabinet_icon.png" />
       <None Remove="Resources\Images\balance_icon.png" />
       <Resource Include="Resources\Images\balance_icon.png" />
+      <None Remove="Resources\Images\Icon.ico" />
+      <Resource Include="Resources\Images\Icon.ico" />
     </ItemGroup>
 
     <ItemGroup>

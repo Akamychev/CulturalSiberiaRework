@@ -11,7 +11,8 @@
         MaxWidth="400" MaxHeight="400"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Background="#202020">
+        Background="#202020"
+        Icon="../Resources/Images/Icon.ico">
     <Window.Resources>
         <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
         <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>

@@ -10,7 +10,9 @@
         Height="650" Width="750"
         MinHeight="650" MinWidth="750"
         MaxHeight="650" MaxWidth="750"
-        Background="#202020">
+        Background="#202020"
+        WindowStartupLocation="CenterScreen"
+        Icon="../../Resources/Images/Icon.ico">
     <Window.Resources>
         <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
         <SolidColorBrush x:Key="AliceBlueBrush" Color="#F0F8FF"/>
