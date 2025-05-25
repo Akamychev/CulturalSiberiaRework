@@ -29,7 +29,12 @@ public class AddNewMuseumViewModel : NotifyProperty
         }
     }
 
-    public List<Museumtype> MuseumTypes { get; }
+    private List<LocalizedTypeDto> _localizedTypes;
+    public List<LocalizedTypeDto> LocalizedTypes
+    {
+        get => _localizedTypes;
+        set => SetField(ref _localizedTypes, value);
+    }
     
     private int _typeId;
     public int TypeId
@@ -171,7 +176,9 @@ public class AddNewMuseumViewModel : NotifyProperty
     public AddNewMuseumViewModel(CulturalSiberiaContext context)
     {
         _context = context;
-        MuseumTypes = _context.Museumtypes.ToList();
+
+        LoadTypes();
+        
         AddNewMuseumCommand = new RelayCommand(async () => await AddNewMuseum());
         ChoseImageCommand = new RelayCommand(OnChoseImage);
     }
@@ -283,5 +290,18 @@ public class AddNewMuseumViewModel : NotifyProperty
         ImageBytes = imageBytes;
         PreviewImage = ImageService.SetImage(imageBytes);
         OnPropertyChanged(nameof(PreviewImage));
+    }
+
+    private void LoadTypes()
+    {
+        var types = _context.Museumtypes.ToList();
+        
+        _localizedTypes = types.Select(t => new LocalizedTypeDto
+        {
+            Id = t.Id,
+            TypeName = Translator.TranslateMuseumTypes(t.TypeName)
+        }).ToList();
+        
+        OnPropertyChanged(nameof(LocalizedTypes));
     }
 }

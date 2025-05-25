@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
+using CulturalSiberiaDiplom.Views.DetailsWindows.OperationsWithDetailWindows;
+using Microsoft.EntityFrameworkCore;
 
 namespace CulturalSiberiaDiplom.ViewModels;
 
@@ -29,7 +33,9 @@ public class EventDetailsViewModel : NotifyProperty
     
     private readonly User _currentUser;
     public User CurrentUser => _currentUser;
-    
+
+    public ObservableCollection<Review> Reviews { get; set; } = new();
+
     private DateTime _editStartDate;
     public DateTime EditStartDate
     {
@@ -73,6 +79,7 @@ public class EventDetailsViewModel : NotifyProperty
     public ICommand OnChoseImageCommand { get; }
     public ICommand DeleteCommand { get; }
     public ICommand OnBuyTicketCommand { get; }
+    public ICommand GoToReviewCommand { get; }
     
 
     public EventDetailsViewModel(Event @event, CulturalSiberiaContext context, User user, Window window)
@@ -83,12 +90,14 @@ public class EventDetailsViewModel : NotifyProperty
         _window = window;
 
         LoadData();
+        LoadReviews();
 
         ToggleEditModeOrSaveChangesCommand = new RelayCommand(OnToggleEditModeOrSaveChanges);
         SetImageCommand = new RelayCommand(() => SetImage(ImageBytes));
         OnChoseImageCommand = new RelayCommand(OnChoseImage);
         DeleteCommand = new RelayCommand(DeleteEvent);
         OnBuyTicketCommand = new RelayCommand(BuyTicket);
+        GoToReviewCommand = new RelayCommand(OnGoToReview);
     }
 
     private async void DeleteEvent()
@@ -157,6 +166,23 @@ public class EventDetailsViewModel : NotifyProperty
         }
         else
             IsInEditMode = true;
+    }
+    
+    private void OnGoToReview()
+    {
+        try
+        {
+            var reviewWindow = new UserReviewWindow(_currentUser, _event, _context);
+
+            ((UserReviewViewModel)reviewWindow.DataContext).AddedReview += (s, e) => LoadReviews(); 
+            
+            reviewWindow.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при открытии окна отзыва: {ex.Message}");
+            MessageService.ShowError("Не удалось открыть окно отзыва");
+        }
     }
 
     private void OnChoseImage()
@@ -247,5 +273,20 @@ public class EventDetailsViewModel : NotifyProperty
         Price = _event.Price?.ToString() ?? "Не указана";
         PreviewImage = _event.ImageMediaId.HasValue ?
             ImageService.GetImageById(_event.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
+    }
+    
+    private void LoadReviews()
+    {
+        var reviews = _context.Reviews
+            .Include(r => r.User)
+            .Where(r => r.EventId == _event.Id)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToList();
+
+        Reviews.Clear();
+        foreach (var review in reviews)
+        {
+            Reviews.Add(review);
+        }
     }
 }

@@ -35,23 +35,22 @@ public static class FilterService
     
     public static IEnumerable<Museum> FilterMuseums(
         IEnumerable<Museum> museums,
-        string museumType = null,
-        string architectName = null,
-        DateTime? foundationDateFrom = null,
-        DateTime? foundationDateTo = null)
+        decimal? minPrice = null,
+        decimal? maxPrice = null,
+        TimeOnly? startTime = null,
+        TimeOnly? endTime = null)
     {
         var filteredMuseums = museums.AsQueryable();
         
-        if (!string.IsNullOrWhiteSpace(museumType))
-            filteredMuseums = filteredMuseums.Where(m => m.Type.TypeName == museumType);
+        if (minPrice.HasValue && minPrice > 0)
+            filteredMuseums = filteredMuseums.Where(m => m.Price >= minPrice.Value);
+        if (maxPrice.HasValue && maxPrice > 0)
+            filteredMuseums = filteredMuseums.Where(m => m.Price <= maxPrice.Value);
         
-        if (!string.IsNullOrWhiteSpace(architectName))
-            filteredMuseums = filteredMuseums.Where(m => m.Architects.Contains(architectName, StringComparison.OrdinalIgnoreCase));
-        
-        if (foundationDateFrom.HasValue)
-            filteredMuseums = filteredMuseums.Where(m => m.DateOfFoundation >= DateOnly.FromDateTime(foundationDateFrom.Value.Date));
-        if (foundationDateTo.HasValue)
-            filteredMuseums = filteredMuseums.Where(m => m.DateOfFoundation <= DateOnly.FromDateTime(foundationDateTo.Value.Date));
+        if (startTime.HasValue)
+            filteredMuseums = filteredMuseums.Where(m => m.StartWorkingTime >= startTime.Value);
+        if (endTime.HasValue)
+            filteredMuseums = filteredMuseums.Where(m => m.EndWorkingTime <= endTime.Value);
 
         return filteredMuseums;
     }

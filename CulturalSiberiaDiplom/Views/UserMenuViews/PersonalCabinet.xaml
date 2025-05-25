@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views.UserMenuViews"
         mc:Ignorable="d"
-        Title="PersonalCabinet" 
+        Title="Личный кабинет" 
         Height="450" Width="620"
         MinHeight="450" MinWidth="620"
         MaxHeight="500" MaxWidth="650"
@@ -114,8 +114,8 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,40">
-            <ComboBox Width="150" Height="35" HorizontalAlignment="Left" Margin="20, 10, 260, 10"/>
-            <Button Content="Главное меню" Width="150" Height="35" HorizontalAlignment="Right"
+            <!-- <ComboBox Width="150" Height="35" HorizontalAlignment="Left" Margin="20, 10, 260, 10"/> -->
+            <Button Content="Главное меню" Width="150" Height="35" HorizontalAlignment="Right" Margin="20,10,0,10"
                     Command="{Binding BackToMenuCommand}"/>
         </StackPanel>
         

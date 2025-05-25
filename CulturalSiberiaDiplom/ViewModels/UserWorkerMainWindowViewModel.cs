@@ -105,6 +105,30 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
             ApplyFilters();
         }
     }
+    
+    private TimeOnly? _startTime;
+    public TimeOnly? StartTime
+    {
+        get => _startTime;
+        set
+        {
+            _startTime = value;
+            OnPropertyChanged(nameof(StartTime));
+            ApplyFilters();
+        }
+    }
+
+    private TimeOnly? _endTime;
+    public TimeOnly? EndTime
+    {
+        get => _endTime;
+        set
+        {
+            _endTime = value;
+            OnPropertyChanged(nameof(EndTime));
+            ApplyFilters();
+        }
+    }
 
     /// <summary>
     /// CheckBox prior 3 later
@@ -310,10 +334,10 @@ public class UserWorkerMainWindowViewModel : NotifyProperty
         
         var filteredMuseums = FilterService.FilterMuseums(
             _allMuseums,
-            SelectedMuseumType, /////////fix
-            ArchitectName,
-            FoundationDateFrom,
-            FoundationDateTo);
+            MinPrice > 0 ? MinPrice : null,
+            MaxPrice > 0 ? MaxPrice : null,
+            StartTime.HasValue ? StartTime : null,
+            EndTime.HasValue ? EndTime : null);
         Museums = new ObservableCollection<Museum>(filteredMuseums);
     }
     

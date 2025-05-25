@@ -240,7 +240,8 @@
                     Margin="0,0,0,20" Grid.Row="3" 
                     Visibility="{Binding CurrentUser.Position.PositionName,
                     Converter={StaticResource RoleToVisibilityConverter},
-                    ConverterParameter=Worker}"/>
+                    ConverterParameter=Worker}"
+                    Command="{Binding AddNewExhibitCommand}"/>
             
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="4" MaxHeight="200">
                 <Border BorderBrush="Gray" BorderThickness="1">

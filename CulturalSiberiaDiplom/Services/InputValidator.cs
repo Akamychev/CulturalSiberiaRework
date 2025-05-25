@@ -163,6 +163,18 @@ public static class InputValidator
         return true;
     }
 
+    public static bool ValidateReviewRating(int? rating)
+    {
+        if (rating == null)
+        {
+            MessageService.ShowError("Поставьте оценку мероприятию");
+            
+            return false;
+        }
+        
+        return true;
+    }
+
     public static bool ValidatePhoneNumbers(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone))
@@ -185,19 +197,7 @@ public static class InputValidator
         if (!ValidatePrice(price)) return false;
         if (!ValidateCapacity(capacity)) return false;
         if (!ValidateEventDates(startDate, endDate)) return false;
-
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            MessageService.ShowError("Все обязательные поля должны быть заполнены");
-            return false;
-        }
-
-        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
-        {
-            MessageBox.Show("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов",
-                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            return false;
-        }
+        if (!ValidateTitle(title)) return false;
         
         return true;
     }
@@ -209,22 +209,11 @@ public static class InputValidator
         if (!ValidatePrice(price)) return false;
         if (!ValidateArchitects(architects)) return false;
         if (!ValidateMuseumTimes(startTime, endTime)) return false;
-        
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            MessageService.ShowError("Все обязательные поля должны быть заполнены");
-            return false;
-        }
+        if (!ValidateTitle(title)) return false;
         
         if (string.IsNullOrWhiteSpace(location))
         {
             MessageService.ShowError("Местоположение не может быть пустым");
-            return false;
-        }
-
-        if (!Regex.IsMatch(title, @"^[А-Яа-яA-Za-zёЁ0-9, ]+$"))
-        {
-            MessageService.ShowError("Название не должно содержать ничего кроме букв, цифр, знака ',' и пробелов");
             return false;
         }
 
@@ -234,7 +223,13 @@ public static class InputValidator
     public static bool ValidateNewExhibit(string title, decimal? price)
     {
         if (!ValidatePrice(price)) return false;
-        
+        if (!ValidateTitle(title)) return false;
+
+        return true;
+    }
+
+    private static bool ValidateTitle(string title)
+    {
         if (string.IsNullOrWhiteSpace(title))
         {
             MessageService.ShowError("Все обязательные поля должны быть заполнены");

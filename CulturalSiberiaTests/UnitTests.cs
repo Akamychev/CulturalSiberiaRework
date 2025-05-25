@@ -1,9 +1,6 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
-using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
-using CulturalSiberiaDiplom.ViewModels;
-using Moq;
 
 namespace CulturalSiberiaTests;
 
@@ -13,8 +10,8 @@ public class UnitTests
     [Fact]
     public void ImageService_SetImage_ReturnsBitmapSource()
     {
-        var imageBytes = File.ReadAllBytes("C:\\Users\\Akame\\RiderProjects\\CulturalSiberiaDiplom" +
-                                           "\\CulturalSiberiaTests\\Resources\\Images\\default_image_for_details.png");
+        var imageBytes = File.ReadAllBytes("C:\\Users\\Akame\\RiderProjects\\CulturalSiberiaDiplom\\" +
+                                           "CulturalSiberiaDiplom\\Resources\\Images\\default_image_for_details.png");
         
         var result = ImageService.SetImage(imageBytes);
         
@@ -45,6 +42,4 @@ public class UnitTests
         Assert.Equal(Visibility.Visible, workerResult);
         Assert.Equal(Visibility.Collapsed, userResult);
     }
-    
-    
 }

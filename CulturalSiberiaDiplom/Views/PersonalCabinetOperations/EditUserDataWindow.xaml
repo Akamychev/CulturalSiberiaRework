@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CulturalSiberiaDiplom.Views.PersonalCabinetOperations"
         xmlns:services="clr-namespace:CulturalSiberiaDiplom.Services"
         mc:Ignorable="d"
-        Title="EditUserDataWindow"
+        Title="Редактирование пользовательских данных"
         Height="450" Width="600"
         MinHeight="450" MinWidth="600"
         MaxHeight="500" MaxWidth="650"

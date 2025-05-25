@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using CulturalSiberiaDiplom.Models;
 using CulturalSiberiaDiplom.Services;
 using CulturalSiberiaDiplom.Views.DetailsWindows;
+using CulturalSiberiaDiplom.Views.WorkerOperationsWithMuseumExhibits;
 using Microsoft.EntityFrameworkCore;
 
 namespace CulturalSiberiaDiplom.ViewModels;
@@ -64,6 +65,7 @@ public class MuseumDetailsViewModel : NotifyProperty
     public bool IsReadOnly => !IsInEditMode;
     
     public ICommand OpenExhibitDetailsCommand { get; }
+    public ICommand AddNewExhibitCommand { get; }
     public ICommand ToggleEditModeOrSaveChangesCommand { get; }
     public ICommand SetImageCommand { get; }
     public ICommand OnChoseImageCommand { get; }
@@ -82,24 +84,12 @@ public class MuseumDetailsViewModel : NotifyProperty
         LoadExhibitsData(museum);
 
         OpenExhibitDetailsCommand = new RelayCommand(() => OnOpenExhibitDetails(SelectedExhibit));
+        AddNewExhibitCommand = new RelayCommand(GoToAddNewExhibit);
         ToggleEditModeOrSaveChangesCommand = new RelayCommand(OnToggleEditModeOrSaveChanges);
         SetImageCommand = new RelayCommand(() => SetImage(ImageBytes));
         OnChoseImageCommand = new RelayCommand(OnChoseImage);
         DeleteCommand = new RelayCommand(DeleteMuseum);
         OnBuyTicketCommand = new RelayCommand(BuyTicket);
-    }
-
-    private void LoadData()
-    {
-        Title = _museum.Name;
-        Location = _museum.Location;
-        Description = _museum.Description ?? "Отсутствует";
-        StartTime = _museum.StartWorkingTime.ToString("t");
-        EndTime = _museum.EndWorkingTime.ToString("t");
-        Type = _museum.Type.TypeName;
-        Price = _museum.Price?.ToString() ?? "Не указана";
-        PreviewImage = _museum.ImageMediaId.HasValue ?
-            ImageService.GetImageById(_museum.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
     }
     
     private void OnOpenExhibitDetails(object? param)
@@ -131,6 +121,15 @@ public class MuseumDetailsViewModel : NotifyProperty
         }
         else
             MessageService.ShowError("Не удалось открыть экспонат");
+    }
+
+    private void GoToAddNewExhibit()
+    {
+        var addNewExhibitWindow = new AddNewMuseumExhibitWindow(_context, _museum);
+
+        ((AddNewExhibitViewModel)addNewExhibitWindow.DataContext).ExhibitAdded += (s, e) => LoadExhibitsData(_museum);
+        
+        addNewExhibitWindow.ShowDialog();
     }
 
     private void BuyTicket()
@@ -249,6 +248,19 @@ public class MuseumDetailsViewModel : NotifyProperty
         ImageBytes = imageBytes;
         PreviewImage = ImageService.SetImage(imageBytes);
         OnPropertyChanged(nameof(PreviewImage));
+    }
+    
+    private void LoadData()
+    {
+        Title = _museum.Name;
+        Location = _museum.Location;
+        Description = _museum.Description ?? "Отсутствует";
+        StartTime = _museum.StartWorkingTime.ToString("t");
+        EndTime = _museum.EndWorkingTime.ToString("t");
+        Type = Translator.TranslateMuseumTypes(_museum.Type.TypeName);
+        Price = _museum.Price?.ToString() ?? "Не указана";
+        PreviewImage = _museum.ImageMediaId.HasValue ?
+            ImageService.GetImageById(_museum.ImageMediaId.Value, _context) : ImageService.GetImageById(-1, _context);
     }
 
     private void LoadExhibitsData(Museum museum)

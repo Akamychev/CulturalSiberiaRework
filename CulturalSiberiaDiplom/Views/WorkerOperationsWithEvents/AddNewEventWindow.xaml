@@ -151,7 +151,7 @@
             <TextBlock Text="Тип:*" FontSize="15" Width="250" Height="25" TextAlignment="Left" 
                        Margin="100, 10, 0, 0"/>
             <ComboBox Name="TypeBox" Margin="100, 10, 0, 0" Width="250" Height="25"
-                      ItemsSource="{Binding EventTypes}" SelectedValue="{Binding TypeId}"
+                      ItemsSource="{Binding LocalizedTypes}" SelectedValue="{Binding TypeId}"
                       DisplayMemberPath="TypeName" SelectedValuePath="Id"
                       Style="{StaticResource {x:Type ComboBox}}"/>
             

@@ -28,8 +28,13 @@ public class AddNewEventViewModel : NotifyProperty
             OnPropertyChanged(nameof(TitleProperty));
         }
     }
-
-    public List<Eventstype> EventTypes { get; }
+    
+    private List<LocalizedTypeDto> _localizedTypes;
+    public List<LocalizedTypeDto> LocalizedTypes
+    {
+        get => _localizedTypes;
+        set => SetField(ref _localizedTypes, value);
+    }
     
     private int _typeId;
     public int TypeId
@@ -95,22 +100,6 @@ public class AddNewEventViewModel : NotifyProperty
         set => SetField(ref _endDate, value);
     }
 
-    // private string _editStartDate;
-    // public string EditStartDate
-    // {
-    //     get => _editStartDate;
-    //     set
-    //     {
-    //         if ()
-    //     }
-    // }
-    //
-    // private string _editEndDate;
-    // public string EditEndDate
-    // {
-    //     
-    // }
-
     private string? _locationProperty;
     public string? LocationProperty
     {
@@ -155,16 +144,19 @@ public class AddNewEventViewModel : NotifyProperty
     
     public string DescriptionCharacterCount =>
         $"{DescriptionProperty?.Length ?? 0}/100";
-
+    
     public ICommand AddNewEventCommand { get; }
     public ICommand ChoseImageCommand { get; }
 
     public AddNewEventViewModel(CulturalSiberiaContext context)
     {
         _context = context;
-        EventTypes = _context.Eventstypes.ToList();
+        
         StartDate = DateTime.Now;
         EndDate = DateTime.Now;
+
+        LoadTypes();
+        
         AddNewEventCommand = new RelayCommand(async () => await AddNewEvent());
         ChoseImageCommand = new RelayCommand(OnChoseImage);
     }
@@ -258,5 +250,18 @@ public class AddNewEventViewModel : NotifyProperty
         ImageBytes = imageBytes;
         PreviewImage = ImageService.SetImage(imageBytes);
         OnPropertyChanged(nameof(PreviewImage));
+    }
+
+    private void LoadTypes()
+    {
+        var types = _context.Eventstypes.ToList();
+
+        _localizedTypes = types.Select(t => new LocalizedTypeDto
+        {
+            Id = t.Id,
+            TypeName = Translator.TranslateEventType(t.TypeName)
+        }).ToList();
+        
+        OnPropertyChanged(nameof(LocalizedTypes));
     }
 }
